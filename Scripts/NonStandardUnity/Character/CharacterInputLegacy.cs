@@ -8,6 +8,10 @@ public class CharacterInputLegacy : MonoBehaviour {
         if (cm == null) { enabled = false; Debug.LogWarning("Missing "+nameof(CharacterMove)+" on "+name); }
     }
     void Update() {
+        Update(cm);
+    }
+
+    public static void Update(CharacterMove cm) {
         Vector2 input = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
         bool jump = Input.GetButton("Jump");
         cm.MoveInput = input;

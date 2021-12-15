@@ -71,6 +71,29 @@ namespace NonStandard.Character {
 			}
 		}
 
+		public bool IsTargettingChildOf(Transform targetRoot) {
+			if (_target == null && targetRoot != null) return false;
+			Transform t = _target;
+			do {
+				if (targetRoot == t) { return true; }
+				t = t.parent;
+			} while (t != null);
+			return false;
+        }
+
+		/// <summary>
+		/// does linear exhaustive search through all <see cref="CharacterCamera"/>s and looks at parent transform hierarchy
+		/// </summary>
+		/// <param name="t"></param>
+		/// <returns></returns>
+		public static CharacterCamera FindCameraTargettingChildOf(Transform t) {
+			CharacterCamera[] ccs = FindObjectsOfType<CharacterCamera>();
+			for(int i = 0; i < ccs.Length; ++i) {
+				if (ccs[i].IsTargettingChildOf(t)) { return ccs[i]; }
+            }
+			return null;
+        }
+
 #if ENABLE_INPUT_SYSTEM
 		public void ProcessLookRotation(InputAction.CallbackContext context) {
 			ProcessLookRotation(context.ReadValue<Vector2>());
