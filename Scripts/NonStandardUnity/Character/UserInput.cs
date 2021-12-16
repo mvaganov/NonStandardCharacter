@@ -9,7 +9,7 @@ using UnityEngine.Events;
 public class CharacterInputAutomate : CharacterInputLegacy { }
 #else
 using UnityEngine.InputSystem;
-public class CharacterInputAutomate : MonoBehaviour {
+public class UserInput : MonoBehaviour {
     [Tooltip("The Character's Controls")]
     public InputActionAsset inputActionAsset;
     [Tooltip("if not null, this is where input related scripts will be added and modified.")]
@@ -24,8 +24,21 @@ public class CharacterInputAutomate : MonoBehaviour {
 
 #if UNITY_EDITOR
     private void Reset() {
+        GenerateDefaultMovesForCharacter();
+    }
+    void GenerateDefaultMovesForCharacter() {
         CharacterMove cm = GetComponent<CharacterMove>();
+        if (cm == null) {
+            Transform t = transform;
+            do {
+                cm = t.GetComponent<CharacterMove>();
+                t = t.parent;
+            } while (cm == null && t != null);
+        }
         CharacterCamera cc = GetComponentInChildren<CharacterCamera>();
+        if (cm == null) {
+            cm = cc.target.GetComponentInParent<CharacterMove>();
+        }
         if (cc != null && !cc.IsTargettingChildOf(cm.transform)) { cc = null; }
         if (cc == null) { cc = CharacterCamera.FindCameraTargettingChildOf(cm.transform); }
         inputBindings = new InputActionBindings[] {
