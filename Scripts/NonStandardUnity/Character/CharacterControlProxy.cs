@@ -13,11 +13,6 @@ namespace NonStandard.Character {
 			get { return target != null ? target.transform : null; }
 			set {
 				Target = value.GetComponent<CharacterRoot>();
-				//if(target != null) {
-				//	transform.parent = MoveTransform;
-				//	transform.localPosition = Vector3.zero;
-				//	transform.localRotation = Quaternion.identity;
-				//}
 			}
 		}
 		public CharacterRoot Target {
