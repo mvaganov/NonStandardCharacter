@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace NonStandard.Character {
 	public class ClickToMove : MonoBehaviour {
-		public CharacterProxy characterToMove;
+		public CharacterControlProxy characterToMove;
 		/*
 		public KCode key = KCode.Mouse0;
 		*/
@@ -28,8 +28,8 @@ namespace NonStandard.Character {
 #if UNITY_EDITOR
 		/// called when created by Unity Editor
 		void Reset() {
-			if (characterToMove == null) { characterToMove = transform.GetComponentInParent<CharacterProxy>(); }
-			if (characterToMove == null) { characterToMove = FindObjectOfType<CharacterProxy>(); }
+			if (characterToMove == null) { characterToMove = transform.GetComponentInParent<CharacterControlProxy>(); }
+			if (characterToMove == null) { characterToMove = FindObjectOfType<CharacterControlProxy>(); }
 			if (_camera == null) { _camera = GetComponent<Camera>(); }
 			if (_camera == null) { _camera = Camera.main; }
 			if (_camera == null) { _camera = FindObjectOfType<Camera>(); }

@@ -15,7 +15,6 @@ public class CharacterInputLegacy : MonoBehaviour {
             cc.ProcessLookRotation(new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y")));
         }
     }
-
     public static void UpdateCharacterMove(CharacterMove cm) {
         Vector2 input = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
         bool jump = Input.GetButton("Jump");
