@@ -2,7 +2,7 @@
   "name": "com.codegiraffe.nonstandard.character",
   "version": "1.0.0",
   "displayName": "NonStandard Character",
-  "description": "A character controller. Requires:{\n'com.codegiraffe.nonstandard.system': 'https://github.com/mvaganov/NonStandardSystem.git',\n'com.codegiraffe.nonstandard.input': 'https://github.com/mvaganov/NonStandardInput.git',\n'com.codegiraffe.nonstandard.eventbind': 'https://github.com/mvaganov/NonStandardEventBind.git'\n}",
+  "description": "A character controller.\nRequires com.codegiraffe.nonstandard libraries: [\n  https://github.com/mvaganov/NonStandardSystem.git\n  https://github.com/mvaganov/NonStandardInput.git\n  https://github.com/mvaganov/NonStandardEventBind.git\n]",
   "unity": "2017.1",
   "dependencies": {
     "com.unity.inputsystem": "1.0.2",
