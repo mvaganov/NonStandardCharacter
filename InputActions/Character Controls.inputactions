@@ -1,5 +1,5 @@
 {
-    "name": "basic",
+    "name": "Character Controls",
     "maps": [
         {
             "name": "Player",
@@ -271,6 +271,17 @@
                     "name": "",
                     "id": "75f9b672-1cf4-4bba-8dfb-34cfb89700ce",
                     "path": "<Keyboard>/space",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Jump",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "6e4cf010-51e8-4517-8fd0-20fa79d9a583",
+                    "path": "<Gamepad>/buttonSouth",
                     "interactions": "",
                     "processors": "",
                     "groups": "",

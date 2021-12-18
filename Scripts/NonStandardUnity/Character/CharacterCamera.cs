@@ -49,6 +49,13 @@ namespace NonStandard.Character {
 			}
 		}
 
+		public Vector2 LookInput {
+			get => new Vector2(horizontalRotateInput, verticalRotateInput);
+			set {
+				horizontalRotateInput = value.x;
+				verticalRotateInput = value.y;
+			}
+		}
 		/// publicly accessible variables that can be modified by external scripts or UI
 		[HideInInspector] public float horizontalRotateInput, verticalRotateInput, zoomInput;
 		public float HorizontalRotateInput { get { return horizontalRotateInput; }
