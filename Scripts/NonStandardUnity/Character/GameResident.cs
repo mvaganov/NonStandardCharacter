@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using NonStandard.Utility.UnityEditor;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace NonStandard.Character {
     public class GameResident : MonoBehaviour {
@@ -7,13 +9,22 @@ namespace NonStandard.Character {
         public bool bindOnStart = true;
         public Vector3 homePoint;
         public List<GameArea> gameAreaInhabited = new List<GameArea>();
+        public UnityEvent onLeftGameArea = new UnityEvent();
         public void BindHomePoint(Vector3 position) { homePoint = position; bindOnStart = false; }
         public void BindHomePointHere() { homePoint = transform.position; bindOnStart = false; }
-        public void ReturnToHome(bool clearVelocity = true) {
-            Rigidbody rb = GetComponentInChildren<Rigidbody>();
-            if (rb) { rb.velocity = Vector3.zero; rb.angularVelocity = Vector3.zero; }
+        public void ReturnHome() {
             transform.position = homePoint;
         }
+        public void ReturnHomeClearVelocity() {
+            Rigidbody rb = GetComponentInChildren<Rigidbody>();
+            if (rb) { rb.velocity = Vector3.zero; rb.angularVelocity = Vector3.zero; }
+            ReturnHome();
+        }
+#if UNITY_EDITOR
+        private void Reset() {
+            EventBind.On(onLeftGameArea, this, nameof(ReturnHomeClearVelocity));
+        }
+#endif
         void Start() {
             if (bindOnStart) { BindHomePointHere(); }
         }
@@ -29,7 +40,7 @@ namespace NonStandard.Character {
                         gameAreaInhabited.RemoveAt(i);
                     }
                 }
-                if (gameAreaInhabited.Count == 0) { ReturnToHome(); }
+                if (gameAreaInhabited.Count == 0) { onLeftGameArea?.Invoke(); }
             }
         }
     }

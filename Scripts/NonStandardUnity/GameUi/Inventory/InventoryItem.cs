@@ -1,74 +1,48 @@
-﻿//using NonStandard.Commands;
-using NonStandard.Data;
-using NonStandard.Utility;
-using System;
+﻿using NonStandard.Data;
 using UnityEngine;
 
 namespace NonStandard.GameUi.Inventory {
-	public class InventoryItem : MonoBehaviour {
+	[System.Serializable]
+	public class InventoryItem {
 		public string itemName;
-		public Collider _pickupCollider;
-		public Inventory inventory;
-		public UnityEvent_GameObject addToInventoryEvent;
-		public UnityEvent_GameObject removeFromInventoryEvent;
-		public UnityEngine.Object data;
-
+		public Sprite itemImage;
+		[System.Serializable]
+		public class SpecialBehavior {
+			public UnityEvent_object onAdd = new UnityEvent_object();
+			public UnityEvent_object onRemove = new UnityEvent_object();
+		}
+		public SpecialBehavior inventoryAddBehavior;
+		public Inventory currentInventory;
+		public object data;
+		public Transform GetTransform() {
+            switch (data) {
+				case GameObject go: return go.transform;
+				case Component c: return c.transform;
+			}
+			return null;
+        }
 		public void RemoveFromCurrentInventory() {
-			if (inventory == null) { return; }
-			removeFromInventoryEvent?.Invoke(inventory.gameObject);
-			inventory = null;
+			if (currentInventory == null) { return; }
+			inventoryAddBehavior?.onRemove?.Invoke(this);
+			currentInventory.RemoveItem(this);
+			currentInventory = null;
 		}
 		public void AddToInventory(Inventory inventory) {
-			if (this.inventory == inventory) {
+			if (this.currentInventory == inventory) {
 				Show.Warning(itemName+" being added to "+inventory.name+" again");
 				return; // prevent double-add
 			}
 			RemoveFromCurrentInventory();
-			this.inventory = inventory;
-			addToInventoryEvent?.Invoke(inventory.gameObject);
+			this.currentInventory = inventory;
+			inventory.AddItem(this);
+			inventoryAddBehavior?.onAdd?.Invoke(this);
 		}
-
-		public void Start() {
-			if (_pickupCollider == null) { _pickupCollider = GetComponent<Collider>(); }
-			CollisionTrigger trigger = _pickupCollider.gameObject.AddComponent<CollisionTrigger>();
-			trigger.onTrigger.AddListener(_OnTrigger);
-		}
-
-		void _OnTrigger(GameObject other) {
-			if (other == Global.Instance().gameObject) return;
+		public void OnTrigger(GameObject other) {
 			InventoryCollector inv = other.GetComponent<InventoryCollector>();
-			if (inv != null && inv.autoPickup && inv.inventory) {
-				/*
-				inv.AddItem(gameObject);
-				*/
+			Debug.Log("item hits "+other);
+			if (inv != null && inv.autoPickup && inv.inventory != null) {
+				inv.AddItem(this);
 			}
-		}
-
-		public void OnEnable() {
-			if (_pickupCollider == null) return;
-			CollisionTrigger trigger = _pickupCollider.GetComponent<CollisionTrigger>();
-			trigger.enabled = false;
-			GameClock.Delay(500, () => { if (trigger != null) trigger.enabled = true; });
-			//NonStandard.Clock.setTimeout(() => { if (trigger != null) trigger.enabled = true; }, 500);
-		}
-		/*
-		public ScriptedDictionary GetDictionaryOfInventory() {
-			GameObject go = inventory.gameObject;
-			ScriptedDictionaryProxy sp;
-			int sentinel = 0;
-			do {
-				sp = go.GetComponent<ScriptedDictionaryProxy>();
-				if (sp == null || sp.dictionary == null) { break; }
-				go = sp.dictionary;
-			} while (++sentinel < 1000);
-			return go.GetComponent<ScriptedDictionary>();
-		}
-		public void ExecuteScriptOnInventoryVariables(string script) {
-			ScriptedDictionary variables = GetDictionaryOfInventory();
-			Commander.Instance.EnqueueRun(new Commander.Instruction(script, variables));
-		}
-		*/
-		public void ShootParticleFromHereToInventory(string expectedParticleName) {
 		}
 	}
 }

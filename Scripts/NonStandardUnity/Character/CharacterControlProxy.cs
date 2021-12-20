@@ -64,6 +64,7 @@ namespace NonStandard.Character {
 		}
 		public void CreateDefaultUserControls() {
 			CharacterCamera cc = GetComponentInChildren<CharacterCamera>();
+			if (cc == null) { cc = GetComponentInParent<CharacterCamera>(); }
 			UserInput userInput = GetComponent<UserInput>();
 			if (userInput == null) {
 				userInput = gameObject.AddComponent<UserInput>();
