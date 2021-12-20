@@ -13,8 +13,7 @@ namespace NonStandard.GameUi.Inventory {
 			if (addAsChildTransform) {
 				Transform t = itm.GetTransform();
 				t.SetParent(transform, true);
-				//itm.inventoryAddBehavior.onRemove.AddListener(UndoTransformAdjust);
-				//EventBind.On
+				EventBind.On(itm.inventoryAddBehavior.onRemove, this, nameof(UndoTransformAdjust));
 			}
 		}
 		public void RemoveItem(object itemObject) {
@@ -27,7 +26,7 @@ namespace NonStandard.GameUi.Inventory {
 			if (itm == null) { return; }
 			Transform t = itm.GetTransform();
 			t.SetParent(null, true);
-			//itm.inventoryAddBehavior.onRemove -= UndoTransformAdjust;
+			EventBind.Remove(itm.inventoryAddBehavior.onRemove, this, nameof(UndoTransformAdjust));
 		}
 	}
 }
