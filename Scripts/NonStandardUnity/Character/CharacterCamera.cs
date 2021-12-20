@@ -30,6 +30,8 @@ namespace NonStandard.Character {
 		/// user-defined zoom
 		/// </summary>
 		public float userDistance;
+		[Tooltip("notified if the look rotation is changed, like from a mouse or joystick adjustment")]
+		public UnityEvent_Vector2 OnLookInputChange;
 		private Transform userTarget;
 		/// <summary>for fast access to transform</summary>
 		private Transform t;
@@ -54,23 +56,17 @@ namespace NonStandard.Character {
 			set {
 				horizontalRotateInput = value.x;
 				verticalRotateInput = value.y;
+				OnLookInputChange?.Invoke(value);
 			}
 		}
 		/// publicly accessible variables that can be modified by external scripts or UI
 		[HideInInspector] public float horizontalRotateInput, verticalRotateInput, zoomInput;
-		public float HorizontalRotateInput { get { return horizontalRotateInput; }
-			set { horizontalRotateInput = inputMultiplier.x == 1 ? value : inputMultiplier.x * value; }
-		}
-		public float VerticalRotateInput { get { return verticalRotateInput; } 
-			set { verticalRotateInput = inputMultiplier.y == 1 ? value : inputMultiplier.y * value; }
-		}
 		public float ZoomInput { get { return zoomInput; } set { zoomInput = value; } }
 		public void AddToTargetDistance(float value) {
 			targetDistance += value;
 			if(targetDistance < 0) { targetDistance = 0; }
 			OrthographicCameraDistanceChangeLogic();
 		}
-
 		public void OrthographicCameraDistanceChangeLogic() {
 			if (cam != null && cam.orthographic) {
 				if (targetDistance < 1f / 128) { targetDistance = 1f / 128; }
@@ -107,8 +103,7 @@ namespace NonStandard.Character {
 		}
 #endif
 		public void ProcessLookRotation(Vector2 lookRot) {
-			horizontalRotateInput = inputMultiplier.x * lookRot.x;
-			verticalRotateInput = inputMultiplier.y * lookRot.y;
+			LookInput = lookRot;
 		}
 		public void ToggleOrthographic() { cam.orthographic = !cam.orthographic; }
 		public void SetCameraOrthographic(bool orthographic) { cam.orthographic = orthographic; }
@@ -170,8 +165,8 @@ namespace NonStandard.Character {
 
 		public void Update() {
 			const float anglePerSecondMultiplier = 100;
-			float rotH = horizontalRotateInput * anglePerSecondMultiplier * Time.unscaledDeltaTime,
-				rotV = verticalRotateInput * anglePerSecondMultiplier * Time.unscaledDeltaTime,
+			float rotH = horizontalRotateInput * anglePerSecondMultiplier * inputMultiplier.x * Time.unscaledDeltaTime,
+				rotV = verticalRotateInput * anglePerSecondMultiplier * inputMultiplier.y * Time.unscaledDeltaTime,
 				zoom = zoomInput * Time.unscaledDeltaTime;
 			targetDistance -= zoom;
 			if (zoom != 0) {

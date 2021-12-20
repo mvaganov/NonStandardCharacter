@@ -9,6 +9,7 @@ namespace NonStandard.Character {
 		[ContextMenuItem("Add default user controls", "CreateDefaultUserControls")]
 #endif
 		[SerializeField] protected CharacterRoot target;
+		public InputForwarding_Vector2.UnityEvent_Vector2 onMoveInput;
 		public Transform MoveTransform {
 			get { return target != null ? target.transform : null; }
 			set {
@@ -36,19 +37,12 @@ namespace NonStandard.Character {
 			get { return target != null ? target.move.JumpHeight : 0; }
 			set { if (target != null) target.move.JumpHeight = value; }
 		}
-		public float StrafeRightMovement {
-			get { return target != null ? target.move.StrafeRightMovement : 0; }
-			set { if (target != null) target.move.StrafeRightMovement = value; }
-		}
-		public float MoveForwardMovement { 
-			get { return target != null ? target.move.MoveForwardMovement : 0; }
-			set { if (target != null) target.move.MoveForwardMovement = value; }
-		}
 		public Vector2 MoveInput {
-			get => new Vector2(StrafeRightMovement, MoveForwardMovement);
+			get => new Vector2(target.move.StrafeRightMovement, target.move.MoveForwardMovement);
 			set {
-				StrafeRightMovement = value.x;
-				MoveForwardMovement = value.y;
+				target.move.StrafeRightMovement = value.x;
+				target.move.MoveForwardMovement = value.y;
+				onMoveInput?.Invoke(value);
 			}
 		}
 		public bool IsAutoMoving() { return target.move.IsAutoMoving(); }
@@ -79,6 +73,7 @@ namespace NonStandard.Character {
 			userInput.AddBinding(new UserInput.Binding("Jump", "Button", new EventBind(this, nameof(this.SetJump))));
 			if (cc != null) {
 				userInput.AddBinding(new UserInput.Binding("Toggle MouseLook", "Button", new EventBind(this, nameof(BindMouselookInputMapToButton))));
+				userInput.AddBinding(new UserInput.Binding("Look", "Vector2", new EventBind(cc, nameof(cc.ProcessLookRotation))));
 				userInput.AddBinding(new UserInput.Binding("MouseLook", "Vector2", new EventBind(cc, nameof(cc.ProcessLookRotation))));
 			}
 		}
