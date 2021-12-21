@@ -13,8 +13,18 @@ namespace NonStandard.GameUi.Inventory {
 		public ListUi inventoryUi;
 		*/
 		public InventoryItem.SpecialBehavior itemAddBehavior;
-		//public UnityEvent_object onAddItem;
-		//public UnityEvent_object onRemoveItem;
+		
+		/// <summary>
+		/// intended for use by DataSheet
+		/// </summary>
+		/// <param name="data"></param>
+		public void DataPopulator(List<object> data) {
+			if (items == null) { return; }
+			data.Clear();
+			for(int i = 0; i < items.Count; ++i) {
+				data.Add(items[i]);
+			}
+        }
 		public List<InventoryItem> GetItems() { return items; }
 		private void Awake() {
 			Global.GetComponent<InventoryManager>().Register(this);
@@ -22,7 +32,7 @@ namespace NonStandard.GameUi.Inventory {
 		public void ActivateGameObject(object itemObject) {
 			Debug.Log("activate " + itemObject);
 			switch (itemObject) {
-				case InventoryItem i: ActivateGameObject(i.data); return;
+				case InventoryItem i: ActivateGameObject(i.component); return;
 				case GameObject go: go.SetActive(true); return;
 				case Component c: c.gameObject.SetActive(true); return;
 			}
@@ -30,7 +40,7 @@ namespace NonStandard.GameUi.Inventory {
 		public void DeactivateGameObject(object itemObject) {
 			Debug.Log("deactivate " + itemObject);
             switch (itemObject) {
-				case InventoryItem i: DeactivateGameObject(i.data); return;
+				case InventoryItem i: DeactivateGameObject(i.component); return;
 				case GameObject go: go.SetActive(false); return;
 				case Component c: c.gameObject.SetActive(false); return;
 			}
@@ -42,31 +52,28 @@ namespace NonStandard.GameUi.Inventory {
 			EventBind.IfNotAlready(itemAddBehavior.onRemove, this, nameof(ActivateGameObject));
 		}
 #endif
-		public InventoryItem FindInventoryItemToAdd(object item, bool createIfMissing) {
-			InventoryItem invi = item as InventoryItem;
-			if (invi != null) return invi;
-			if (item is GameObject go) {
-				InventoryItemObject invio = go.GetComponent<InventoryItemObject>();
-				if (invio != null) {
-					return invio.item;
-				}
-				if (invio == null) {
-					for(int i = 0; i < items.Count; ++i) {
-						if (items[i].data == item) {
+		public InventoryItem FindInventoryItemToAdd(object data, bool createIfMissing) {
+            switch (data) {
+				case InventoryItem invi: return invi;
+				case InventoryItemObject invio: return invio.item;
+				case GameObject go: {
+					InventoryItemObject invio = go.GetComponent<InventoryItemObject>();
+					if (invio != null) { return invio.item; }
+					for (int i = 0; i < items.Count; ++i) {
+						if (items[i].data == data) {
 							return items[i];
-                        }
-                    }
-                }
-				if (invio == null && createIfMissing) {
-					invio = go.AddComponent<InventoryItemObject>();
-					invio.item.data = item;
-					return invio.item;
-				}
+						}
+					}
+					if (createIfMissing) {
+						invio = go.AddComponent<InventoryItemObject>();
+						invio.item.component = invio;
+						invio.item.data = data;
+						return invio.item;
+					}
+				}break;
 			}
-			if (invi == null) {
-				Debug.LogWarning("cannot convert ("+item.GetType()+") "+item+" into InventoryItem");
-            }
-			return invi;
+			Debug.LogWarning("cannot convert ("+data.GetType()+") "+data+" into InventoryItem");
+			return null;
 		}
 		internal InventoryItem AddItem(object itemObject) {
 			if (items == null) { items = new List<InventoryItem>(); }

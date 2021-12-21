@@ -7,7 +7,7 @@ public class InventoryItemObject : MonoBehaviour {
     [Tooltip("will generate a sphere collider if none is given")]
     public Collider trigger;
     private void Awake() {
-        item.data = this;
+        item.component = this;
     }
     private void Start() {
         if (trigger == null) {
