@@ -1,11 +1,12 @@
-﻿using NonStandard.Data;
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEngine.Events;
 
 namespace NonStandard.Character {
 	public class CharacterRoot : MonoBehaviour
 	{
 		public CharacterMove move;
 		public Object data;
+		[System.Serializable] public class UnityEvent_GameObject : UnityEvent<GameObject> { }
 		public UnityEvent_GameObject activateFunction;
 
 		public void Init() {
@@ -18,12 +19,12 @@ namespace NonStandard.Character {
 		public void Start() { Init(); }
 		public void DoActivateTrigger() {
 			if (activateFunction.GetPersistentEventCount() == 0) {
-				Show.Log("empty activation function?");
+				Debug.Log("empty activation function?");
 			}
 			activateFunction.Invoke(gameObject);
 		}
 		public void DoActivateTrigger(int a, int b) {
-			Show.Log(a + b);
+			Debug.Log(a + b);
 		}
 	}
 }

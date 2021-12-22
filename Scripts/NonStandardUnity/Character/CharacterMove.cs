@@ -1,5 +1,4 @@
-﻿using NonStandard.Data;
-using NonStandard.Process;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -14,6 +13,7 @@ namespace NonStandard.Character {
 		private Transform body;
 		private CapsuleCollider capsule;
 
+		public static ulong Now => (ulong)System.Environment.TickCount;
 		private void Awake() { body = transform; capsule = GetComponentInChildren<CapsuleCollider>(); }
 		void Start() {
 			rb = GetComponent<Rigidbody>();
@@ -191,7 +191,7 @@ namespace NonStandard.Character {
 					if (moveDirection == Vector3.zero) {
 						if (!automaticMovement.arrived) {
 							moveDirection = automaticMovement.CalculateMoveDirection(t.position, speed * intendedSpeed, Vector3.up, ref automaticMovement.arrived);
-							if (automaticMovement.arrived) { cm.callbacks.arrived.Invoke(automaticMovement.targetPosition); }
+							if (automaticMovement.arrived) { cm.callbacks?.arrived?.Invoke(automaticMovement.targetPosition); }
 						}
 					} else {
 						automaticMovement.arrived = true; // if the player is providing input, stop calculating automatic movement
@@ -202,7 +202,7 @@ namespace NonStandard.Character {
 					// apply the direction-adjusted movement to the velocity
 					moveVelocity *= (speed * intendedSpeed);
 				}
-				if(moveDirection != oldDirection) { cm.callbacks.moveDirectionChanged.Invoke(moveDirection); }
+				if(moveDirection != oldDirection) { cm.callbacks?.moveDirectionChanged?.Invoke(moveDirection); }
 				float gravity = cm.rb.velocity.y; // get current gravity
 				moveVelocity.y = gravity; // apply to new velocity
 				if(lookForwardMoving && moveDirection != Vector3.zero && orientationTransform != null)
@@ -218,7 +218,7 @@ namespace NonStandard.Character {
 				lastVelocity = moveVelocity;
 				if(oppositionDirection == Vector3.zero && lastOppositionDirection != Vector3.zero)
 				{
-					cm.callbacks.wallCollisionStopped.Invoke(); // done colliding
+					cm.callbacks?.wallCollisionStopped?.Invoke(); // done colliding
 					lastOppositionDirection = Vector3.zero;
 				}
 				oppositionDirection = Vector3.zero;
@@ -264,7 +264,7 @@ namespace NonStandard.Character {
 				}
 				if(wallCollisions != -1) {
 					if (lastOppositionDirection != oppositionDirection) {
-						cm.callbacks.wallCollisionStart.Invoke(oppositionDirection);
+						cm.callbacks?.wallCollisionStart?.Invoke(oppositionDirection);
 					}
 					lastOppositionDirection = oppositionDirection;
 				}
@@ -295,12 +295,12 @@ namespace NonStandard.Character {
 				bool wasJumping = jump.isJumping;
 				jump.FixedUpdate(this);
 				if(jump.isJumping && !wasJumping) {
-					callbacks.jumped.Invoke(Vector3.up);
+					callbacks?.jumped?.Invoke(Vector3.up);
 				}
 			}
 			if (!move.isStableOnGround && !jump.isJumping && move.groundNormal != Vector3.zero) {
 				move.groundNormal = Vector3.zero;
-				callbacks.fall.Invoke();
+				callbacks?.fall?.Invoke();
 			}
 			move.isStableOnGround = false; // invalidate stability *after* jump state is calculated
 		}
@@ -317,7 +317,7 @@ namespace NonStandard.Character {
 			if(contactThatMakesStability >= 0) {
 				Vector3 standingNormal = collision.contacts[contactThatMakesStability].normal;
 				if (standingNormal != move.groundNormal) {
-					callbacks.stand.Invoke(standingNormal);
+					callbacks?.stand?.Invoke(standingNormal);
 				}
 				move.groundNormal = standingNormal;
 			}
@@ -380,10 +380,10 @@ namespace NonStandard.Character {
 			*/
 			public bool Pressed {
 				get { return pressed; }
-				set { if (value && !pressed) { timePressed = Proc.Now; } pressed = value; }
+				set { if (value && !pressed) { timePressed = Now; } pressed = value; }
 			}
 			public void Start(Vector3 p) {
-				jumpTime = Proc.Now;
+				jumpTime = Now;
 				peakTime = 0;
 				isJumping = true;
 				peaked = false;
@@ -399,13 +399,13 @@ namespace NonStandard.Character {
 				if (!enabled) return;
 				bool peakedAtStart = peaked, jumpingAtStart = isJumping;
 				bool jpress = pressed;
-				ulong now = Proc.Now;
+				ulong now = Now;
 				if (TimedJumpPress > 0) {
 					jpress = true; TimedJumpPress -= Time.deltaTime; if (TimedJumpPress < 0) { TimedJumpPress = 0; }
 				}
 				bool lateButForgiven = false;
 				ulong late = 0;
-				if (cm.move.isStableOnGround) { usedDoubleJumps = 0; } else if (jpress && forgiveLateJumps && (late = Proc.Now - stableTime) < jumpLagForgivenessMs) {
+				if (cm.move.isStableOnGround) { usedDoubleJumps = 0; } else if (jpress && forgiveLateJumps && (late = Now - stableTime) < jumpLagForgivenessMs) {
 					stableTime = 0;
 					cm.move.isStableOnGround = lateButForgiven = true;
 				}
@@ -430,7 +430,7 @@ namespace NonStandard.Character {
 				if (!heightSet) {
 					CalcJumpOverTime(now - jumpTime, gForce, out float y, out float yVelocity);
 					if (float.IsNaN(y)) {
-						Show.Log("if you see this error message, there might be a timing problem\n"+
+						Debug.Log("if you see this error message, there might be a timing problem\n"+
 							(now - jumpTime)+" bad y value... "+yVelocity+"  "+ peakTime+" vs "+now); // TODO why bad value happens sometimes?
 						y = 0;
 						yVelocity = 0;
@@ -483,7 +483,7 @@ namespace NonStandard.Character {
 			}
 			public void MarkStableJumpPoint(Vector3 position) {
 				this.position = position;
-				stableTime = Proc.Now;
+				stableTime = Now;
 			}
 			/// <param name="pos">starting position of the jump</param>
 			/// <param name="dir"></param>
@@ -533,6 +533,7 @@ namespace NonStandard.Character {
 		public Callbacks callbacks = new Callbacks();
 
 		[System.Serializable] public class Callbacks {
+			[System.Serializable] public class UnityEvent_Vector3 : UnityEvent<Vector3> { }
 			[Tooltip("when player changes direction, passes the new direction")]
 			public UnityEvent_Vector3 moveDirectionChanged;
 			[Tooltip("when player changes their standing angle, passes the new ground normal")]
@@ -547,6 +548,15 @@ namespace NonStandard.Character {
 			public UnityEvent wallCollisionStopped;
 			[Tooltip("when auto-moving player reaches their goal, passes absolute location of the goal")]
 			public UnityEvent_Vector3 arrived;
-		}
+            public void Initialize() {
+				moveDirectionChanged = new UnityEvent_Vector3();
+				stand = new UnityEvent_Vector3();
+				jumped = new UnityEvent_Vector3();
+				fall = new UnityEvent();
+				wallCollisionStart = new UnityEvent_Vector3();
+				wallCollisionStopped = new UnityEvent();
+				arrived = new UnityEvent_Vector3();
+            }
+        }
 	}
 }

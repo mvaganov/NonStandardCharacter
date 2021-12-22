@@ -1,9 +1,7 @@
-﻿using NonStandard.Data;
-using NonStandard.Extension;
-using NonStandard.Process;
-using NonStandard.Ui;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 #if ENABLE_INPUT_SYSTEM
 using UnityEngine.InputSystem;
 #endif
@@ -30,6 +28,7 @@ namespace NonStandard.Character {
 		/// user-defined zoom
 		/// </summary>
 		public float userDistance;
+		[System.Serializable] public class UnityEvent_Vector2 : UnityEvent<Vector2> { }
 		[Tooltip("notified if the look rotation is changed, like from a mouse or joystick adjustment")]
 		public UnityEvent_Vector2 OnLookInputChange;
 		private Transform userTarget;
@@ -130,6 +129,14 @@ namespace NonStandard.Character {
 		public void Awake() { t = transform; }
 
 		public void Start() {
+#if NONSTANDARD_MOUSE
+			Debug.Log("WOO! THE MICE!");
+			Debug.Log("WOO! THE MICE!");
+			Debug.Log("WOO! THE MICE!");
+			Debug.Log("WOO! THE MICE!");
+			Debug.Log("WOO! THE MICE!");
+			Debug.Log("WOO! THE MICE!");
+#endif
 			RecalculateDistance();
 			RecalculateRotation();
 			userTarget = target;
@@ -242,7 +249,7 @@ namespace NonStandard.Character {
 		private string currentViewname = "user";
 		public string CurrentViewName { get { return currentViewname; } }
 		public void SetLerpSpeed(float durationSeconds) { lerpDurationMs = (long)(durationSeconds*1000); }
-		private long started, end;
+		private ulong started, end;
 		public long lerpDurationMs = 250;
 		private float distStart;
 		private Quaternion rotStart;
@@ -276,7 +283,18 @@ namespace NonStandard.Character {
 			*/
 			Debug.LogWarning($"unkown view name \"{viewName}\"");
 		}
-		public void LerpDirection(Direction3D dir) { LerpDirection(dir.GetVector3()); }
+		public enum Direction3D { Down = 1, Left = 2, Back = 4, Up = 8, Right = 16, Forward = 32, }
+		public Vector3 ConvertToVector3(Direction3D dir) { switch (dir) {
+				case Direction3D.Down:   return Vector3.down;
+				case Direction3D.Left:   return Vector3.left;
+				case Direction3D.Back:   return Vector3.back;
+				case Direction3D.Up:     return Vector3.up;
+				case Direction3D.Right:  return Vector3.right;
+				case Direction3D.Forward:return Vector3.forward;
+			}
+			return Vector3.zero;
+		}
+		public void LerpDirection(Direction3D dir) { LerpDirection(ConvertToVector3(dir)); }
 		public void LerpDirection(Vector3 direction) { LerpRotation(Quaternion.LookRotation(direction)); }
 		public void LerpRotation(Quaternion direction) {
 			targetView.rotation = direction;
@@ -302,10 +320,10 @@ namespace NonStandard.Character {
 				view.ResolveLookRotationIfNeeded();
 				targetView.rotation = view.rotation;
 			}
-			StartLerpToTarget();
+			StartCoroutine(StartLerpToTarget());
 		}
-		public void StartLerpToTarget() {
-			if (lerping) return;
+		public IEnumerator StartLerpToTarget() {
+			if (lerping) yield break;
 			lerping = true;
 			rotStart = t.rotation;
 			startPosition = t.position;
@@ -318,14 +336,19 @@ namespace NonStandard.Character {
 			//if (targetView.target != null) {
 				_target = null;
 			//}
-			started = Proc.Time;
-			end = Proc.Time + lerpDurationMs;
-			Proc.Delay(0, LerpToTarget);
+			started = CharacterMove.Now;
+			end = CharacterMove.Now + (ulong)lerpDurationMs;
+			yield return null;
+			//Proc.Delay(0, LerpToTarget);
+            while (lerping) {
+				LerpToTarget();
+				yield return null;
+			}
 		}
 		private void LerpToTarget() {
 			lerping = true;
-			long now = Proc.Time;
-			long passed = now - started;
+			ulong now = CharacterMove.Now;
+			ulong passed = now - started;
 			float p = (float)passed / lerpDurationMs;
 			if (now >= end) { p = 1; }
 			if (!targetView.ignoreLookRotationChanges) {
@@ -360,7 +383,7 @@ namespace NonStandard.Character {
 				}
 			}
 			RecalculateRotation();
-			if (p < 1) { Proc.Delay(20, LerpToTarget); } else {
+			if (p >= 1) {
 				if (targetView.useTransformPositionChanges) {
 					_target = targetView.target;
 				}

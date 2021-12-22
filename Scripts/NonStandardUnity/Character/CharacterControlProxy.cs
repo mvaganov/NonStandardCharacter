@@ -1,5 +1,6 @@
 ﻿using NonStandard.Utility.UnityEditor;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.InputSystem;
 
 namespace NonStandard.Character {
@@ -9,7 +10,8 @@ namespace NonStandard.Character {
 		[ContextMenuItem("Add default user controls", "CreateDefaultUserControls")]
 #endif
 		[SerializeField] protected CharacterRoot target;
-		public InputForwarding_Vector2.UnityEvent_Vector2 onMoveInput;
+		[System.Serializable] public class UnityEvent_Vector2 : UnityEvent<Vector2> { }
+		public UnityEvent_Vector2 onMoveInput;
 		public Transform MoveTransform {
 			get { return target != null ? target.transform : null; }
 			set {

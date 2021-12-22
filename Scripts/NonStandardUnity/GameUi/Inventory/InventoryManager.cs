@@ -4,7 +4,6 @@ using NonStandard.Commands;
 */
 using System.Collections.Generic;
 using UnityEngine;
-using NonStandard.Extension;
 
 namespace NonStandard.GameUi.Inventory {
 	public class InventoryManager : MonoBehaviour {

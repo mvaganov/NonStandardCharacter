@@ -1,5 +1,4 @@
-﻿using NonStandard.Data;
-using NonStandard.Utility.UnityEditor;
+﻿using NonStandard.Utility.UnityEditor;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -9,9 +8,6 @@ namespace NonStandard.GameUi.Inventory {
 		[ContextMenuItem("Drop All Items", nameof(DropAllItems))]
 		public bool allowRemove = true;
 		[SerializeField] private List<InventoryItem> items;
-		/*
-		public ListUi inventoryUi;
-		*/
 		public InventoryItem.SpecialBehavior itemAddBehavior;
 		
 		/// <summary>
@@ -27,10 +23,10 @@ namespace NonStandard.GameUi.Inventory {
         }
 		public List<InventoryItem> GetItems() { return items; }
 		private void Awake() {
-			Global.GetComponent<InventoryManager>().Register(this);
+			//Global.GetComponent<InventoryManager>().Register(this);
 		}
 		public void ActivateGameObject(object itemObject) {
-			Debug.Log("activate " + itemObject);
+			//Debug.Log("activate " + itemObject);
 			switch (itemObject) {
 				case InventoryItem i: ActivateGameObject(i.component); return;
 				case GameObject go: go.SetActive(true); return;
@@ -38,7 +34,7 @@ namespace NonStandard.GameUi.Inventory {
 			}
 		}
 		public void DeactivateGameObject(object itemObject) {
-			Debug.Log("deactivate " + itemObject);
+			//Debug.Log("deactivate " + itemObject);
             switch (itemObject) {
 				case InventoryItem i: DeactivateGameObject(i.component); return;
 				case GameObject go: go.SetActive(false); return;
@@ -111,7 +107,7 @@ namespace NonStandard.GameUi.Inventory {
 		}
 		public void DropAllItems() {
 			for(int i = items.Count-1; i >= 0; --i) {
-				items[i].RemoveFromCurrentInventory();
+				items[i].Drop();
             }
         }
 	}

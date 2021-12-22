@@ -1,20 +1,29 @@
-﻿using NonStandard.Data;
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEngine.Events;
 
 namespace NonStandard.GameUi.Inventory {
 	[System.Serializable]
 	public class InventoryItem {
-		public string name;
-		public Sprite itemImage;
+		[SerializeField] public string _name;
+		public Sprite image;
 		[System.Serializable]
 		public class SpecialBehavior {
+			[System.Serializable] public class UnityEvent_object : UnityEvent<object> { }
 			public UnityEvent_object onAdd = new UnityEvent_object();
 			public UnityEvent_object onRemove = new UnityEvent_object();
 		}
 		public SpecialBehavior inventoryAddBehavior;
-		public Inventory currentInventory;
-		public InventoryItemObject component;
+		[HideInInspector] public Inventory currentInventory;
+		[HideInInspector] public InventoryItemObject component;
 		public object data;
+		public bool nodrop = false;
+		public string name {
+			get => _name;
+			set {
+				_name = value;
+				if (component != null) { component.name = _name; }
+            }
+        }
 		public InventoryItemObject GetItemObject() {
 			return component;
         }
@@ -26,7 +35,7 @@ namespace NonStandard.GameUi.Inventory {
 			//}
 			//return null;
         }
-		public void RemoveFromCurrentInventory() {
+		public void Drop() {
 			if (currentInventory == null) { return; }
 			inventoryAddBehavior?.onRemove?.Invoke(this);
 			currentInventory.RemoveItem(this);
@@ -34,17 +43,17 @@ namespace NonStandard.GameUi.Inventory {
 		}
 		public void AddToInventory(Inventory inventory) {
 			if (this.currentInventory == inventory) {
-				Show.Warning(name+" being added to "+inventory.name+" again");
+				Debug.LogWarning(name+" being added to "+inventory.name+" again");
 				return; // prevent double-add
 			}
-			RemoveFromCurrentInventory();
+			Drop();
 			this.currentInventory = inventory;
 			inventory.AddItem(this);
 			inventoryAddBehavior?.onAdd?.Invoke(this);
 		}
 		public void OnTrigger(GameObject other) {
 			InventoryCollector inv = other.GetComponent<InventoryCollector>();
-			Debug.Log("item hits "+other);
+			//Debug.Log("item hits "+other);
 			if (inv != null && inv.autoPickup && inv.inventory != null) {
 				inv.AddItem(this);
 			}

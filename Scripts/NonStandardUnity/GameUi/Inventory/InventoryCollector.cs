@@ -19,7 +19,7 @@ namespace NonStandard.GameUi.Inventory {
 		public void RemoveItem(object itemObject) {
 			InventoryItem itm = inventory.FindInventoryItemToAdd(itemObject, false);
 			if (itm == null) { return; }
-			itm.RemoveFromCurrentInventory();
+			itm.Drop();
 		}
 		public void UndoTransformAdjust(object itemObject) {
 			InventoryItem itm = inventory.FindInventoryItemToAdd(itemObject, false);

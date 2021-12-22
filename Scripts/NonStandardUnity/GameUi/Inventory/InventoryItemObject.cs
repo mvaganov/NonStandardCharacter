@@ -1,5 +1,5 @@
 using NonStandard.GameUi.Inventory;
-using NonStandard.Process;
+using System.Collections;
 using UnityEngine;
 
 public class InventoryItemObject : MonoBehaviour {
@@ -28,9 +28,13 @@ public class InventoryItemObject : MonoBehaviour {
     public void OnEnable() {
         if (trigger != null) {
             trigger.enabled = false;
-            Proc.Delay(2500, () => { if (trigger != null) trigger.enabled = true; });
+            //Proc.Delay(2500, () => { if (trigger != null) trigger.enabled = true; });
+            StartCoroutine(DelayTrigger()); IEnumerator DelayTrigger() {
+                yield return new WaitForSeconds(2.5f);
+                trigger.enabled = true;
+            }
         }
-	}
+    }
     private void OnTriggerEnter(Collider other) {
         if (!trigger.enabled) return; // don't do trigger logic if the collider is supposed to be off.
         item.OnTrigger(other.gameObject);
