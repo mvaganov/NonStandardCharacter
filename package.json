@@ -6,6 +6,7 @@
   "unity": "2017.1",
   "dependencies": {
     "com.unity.inputsystem": "1.0.2",
+    "com.codegiraffe.nonstandard.unityutility": "1.0.0",
     "com.codegiraffe.nonstandard.input": "1.0.0",
     "com.codegiraffe.nonstandard.eventbind": "1.0.0"
   },
