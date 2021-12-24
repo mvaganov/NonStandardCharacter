@@ -4,7 +4,7 @@ using UnityEngine.Events;
 using UnityEngine.InputSystem;
 
 namespace NonStandard.Character {
-	public class CharacterControlProxy : MonoBehaviour {
+	public class CharacterController : MonoBehaviour {
 		[Tooltip("What character to pass input to")]
 #if ENABLE_INPUT_SYSTEM
 		[ContextMenuItem("Add default user controls", "CreateDefaultUserControls")]
