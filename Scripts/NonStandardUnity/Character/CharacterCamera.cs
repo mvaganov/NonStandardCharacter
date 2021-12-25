@@ -129,14 +129,6 @@ namespace NonStandard.Character {
 		public void Awake() { t = transform; }
 
 		public void Start() {
-#if NONSTANDARD_MOUSE
-			Debug.Log("WOO! THE MICE!");
-			Debug.Log("WOO! THE MICE!");
-			Debug.Log("WOO! THE MICE!");
-			Debug.Log("WOO! THE MICE!");
-			Debug.Log("WOO! THE MICE!");
-			Debug.Log("WOO! THE MICE!");
-#endif
 			RecalculateDistance();
 			RecalculateRotation();
 			userTarget = target;
