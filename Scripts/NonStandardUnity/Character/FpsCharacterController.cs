@@ -5,11 +5,10 @@ using UnityEngine.InputSystem;
 
 namespace NonStandard.Character {
 	public class FpsCharacterController : MonoBehaviour {
-		[Tooltip("What character to pass input to")]
-#if ENABLE_INPUT_SYSTEM
+		[Tooltip("What character is being controlled (right-click to add default controls)")]
 		[ContextMenuItem("Add default user controls", "CreateDefaultUserControls")]
-#endif
 		[SerializeField] protected CharacterRoot target;
+		[Tooltip("What camera is being controlled")]
 		[SerializeField] protected CharacterCamera _camera;
 		InputActionMap mouselookActionMap;
 		public UnityEvent_Vector2 onMoveInput;
@@ -95,22 +94,19 @@ namespace NonStandard.Character {
 				pleaseCreateInputActionAsset = true;
 				userInput.inputActionAsset = ScriptableObject.CreateInstance<InputActionAsset>();
 			}
-			userInput.AddBinding(new Binding(n_Player+"/"+n_Move, ControlType.Vector2, new EventBind(this, nameof(this.SetMove)), new string[] {
-				"<Gamepad>/leftStick", "<XRController>/{Primary2DAxis}", "<Joystick>/stick", Binding.CompositePrefix+"WASD:"+
-				"Up:<Keyboard>/w,<Keyboard>/upArrow;Down:<Keyboard>/s,<Keyboard>/downArrow;Left:<Keyboard>/a,<Keyboard>/leftArrow;Right:<Keyboard>/d,<Keyboard>/rightArrow"}
-			));
-			userInput.AddBinding(new Binding(n_Player+"/"+n_Jump, ControlType.Button, new EventBind(this, nameof(this.SetJump)), new string[] {
-				"<Keyboard>/space","<Gamepad>/buttonSouth"
-			}));
-			userInput.AddBinding(new Binding(n_Player + "/" + n_Fire, ControlType.Button, new EventBind(this, nameof(this.SetFire)), new string[] {
-				"<Gamepad>/rightTrigger","<Mouse>/leftButton","<Touchscreen>/primaryTouch/tap","<Joystick>/trigger","<XRController>/{PrimaryAction}","<Gamepad>/buttonWest"
-			}));
-			userInput.AddBinding(new Binding(n_Player+"/"+n_ToggleML, ControlType.Button,
-				new EventBind(this, nameof(BindMouselookInputMapToButton)), new string[] { "<Mouse>/rightButton" }));
-			userInput.AddBinding(new Binding(n_Player+"/"+n_Look, ControlType.Vector2,
-				new EventBind(this, nameof(NotifyCameraRotation)), new string[] { "<Gamepad>/rightStick", "<Joystick>/{Hatswitch}" }));
-			userInput.AddBinding(new Binding(n_MouseLook+"/"+n_Look, ControlType.Vector2,
-				new EventBind(this, nameof(NotifyCameraRotation)), new string[] { "<VirtualMouse>/delta", "<Pointer>/delta", "<Mouse>/delta" }));
+			Binding[] bindings = new Binding[] {
+				new Binding(n_Player+"/"+n_Move,    ControlType.Vector2, new EventBind(this, nameof(this.SetMove)), new string[] {"<Gamepad>/leftStick", "<XRController>/{Primary2DAxis}", "<Joystick>/stick",
+					Binding.CompositePrefix+"WASD:"+"Up:<Keyboard>/w,<Keyboard>/upArrow;Down:<Keyboard>/s,<Keyboard>/downArrow;Left:<Keyboard>/a,<Keyboard>/leftArrow;Right:<Keyboard>/d,<Keyboard>/rightArrow"}),
+				new Binding(n_Player+"/"+n_Jump,    ControlType.Button,  new EventBind(this, nameof(this.SetJump)), new string[] {"<Keyboard>/space","<Gamepad>/buttonSouth"}),
+				new Binding(n_Player + "/" + n_Fire,ControlType.Button,  new EventBind(this, nameof(this.SetFire)), new string[] {
+				"<Gamepad>/rightTrigger","<Mouse>/leftButton","<Touchscreen>/primaryTouch/tap","<Joystick>/trigger","<XRController>/{PrimaryAction}","<Gamepad>/buttonWest"}),
+				new Binding(n_Player+"/"+n_ToggleML,ControlType.Button,  new EventBind(this, nameof(BindMouselookInputMapToButton)), new string[] { "<Mouse>/rightButton" }),
+				new Binding(n_Player+"/"+n_Look,    ControlType.Vector2, new EventBind(this, nameof(NotifyCameraRotation)), new string[] { "<Gamepad>/rightStick", "<Joystick>/{Hatswitch}" }),
+				new Binding(n_MouseLook+"/"+n_Look, ControlType.Vector2, new EventBind(this, nameof(NotifyCameraRotation)), new string[] { "<VirtualMouse>/delta", "<Pointer>/delta", "<Mouse>/delta" }),
+			};
+			foreach(Binding b in bindings) {
+				userInput.AddBinding(b);
+			}
 			if (pleaseCreateInputActionAsset) {
 				userInput.inputActionAsset.name = n_InputActionPath;
 				userInput.inputActionAsset = ScriptableObjectUtility.SaveScriptableObjectAsAsset(userInput.inputActionAsset,

@@ -75,14 +75,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   inputActionAsset: {fileID: -944628639613478452, guid: 36e2e8f9bff79394db718929b3947520, type: 3}
   inputBindings:
-  - name: Player/Move
-    type: 1
-    controls:
+  - actionName: Player/Move
+    controlType: 1
+    bindingPaths:
     - <Gamepad>/leftStick
     - <XRController>/{Primary2DAxis}
     - <Joystick>/stick
     - ^COMPOSITE^WASD:Up:<Keyboard>/w,<Keyboard>/upArrow;Down:<Keyboard>/s,<Keyboard>/downArrow;Left:<Keyboard>/a,<Keyboard>/leftArrow;Right:<Keyboard>/d,<Keyboard>/rightArrow
-    startPerformCancel:
+    actionEventHandler:
       m_PersistentCalls:
         m_Calls:
         - m_Target: {fileID: 6908758505907782173}
@@ -98,12 +98,12 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
-  - name: Player/Jump
-    type: 0
-    controls:
+  - actionName: Player/Jump
+    controlType: 0
+    bindingPaths:
     - <Keyboard>/space
     - <Gamepad>/buttonSouth
-    startPerformCancel:
+    actionEventHandler:
       m_PersistentCalls:
         m_Calls:
         - m_Target: {fileID: 6908758505907782173}
@@ -119,16 +119,16 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
-  - name: Player/Fire
-    type: 0
-    controls:
+  - actionName: Player/Fire
+    controlType: 0
+    bindingPaths:
     - <Gamepad>/rightTrigger
     - <Mouse>/leftButton
     - <Touchscreen>/primaryTouch/tap
     - <Joystick>/trigger
     - <XRController>/{PrimaryAction}
     - <Gamepad>/buttonWest
-    startPerformCancel:
+    actionEventHandler:
       m_PersistentCalls:
         m_Calls:
         - m_Target: {fileID: 6908758505907782173}
@@ -144,11 +144,11 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
-  - name: Player/Toggle MouseLook
-    type: 0
-    controls:
+  - actionName: Player/Toggle MouseLook
+    controlType: 0
+    bindingPaths:
     - <Mouse>/rightButton
-    startPerformCancel:
+    actionEventHandler:
       m_PersistentCalls:
         m_Calls:
         - m_Target: {fileID: 6908758505907782173}
@@ -164,12 +164,12 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
-  - name: Player/Look
-    type: 1
-    controls:
+  - actionName: Player/Look
+    controlType: 1
+    bindingPaths:
     - <Gamepad>/rightStick
     - <Joystick>/{Hatswitch}
-    startPerformCancel:
+    actionEventHandler:
       m_PersistentCalls:
         m_Calls:
         - m_Target: {fileID: 6908758505907782173}
@@ -185,13 +185,13 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
-  - name: MouseLook/Look
-    type: 1
-    controls:
+  - actionName: MouseLook/Look
+    controlType: 1
+    bindingPaths:
     - <VirtualMouse>/delta
     - <Pointer>/delta
     - <Mouse>/delta
-    startPerformCancel:
+    actionEventHandler:
       m_PersistentCalls:
         m_Calls:
         - m_Target: {fileID: 6908758505907782173}
