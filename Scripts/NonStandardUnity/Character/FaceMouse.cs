@@ -98,7 +98,7 @@ namespace NonStandard.Character {
 				TurnAccordingToJoystick(joystickFace);
 			} else {
 				if(bodyTransform == null || followEvenWhileMoving) {
-					LookAtMouse(Input.mousePosition);
+					LookAtMouse(UnityEngine.Input.mousePosition);
 				} else {
 					ForceLookAt(transform.position + bodyTransform.forward);
 				}

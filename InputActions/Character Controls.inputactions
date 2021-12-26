@@ -258,6 +258,17 @@
                 },
                 {
                     "name": "",
+                    "id": "c8cd6d41-936b-436d-8fba-f6bdc65582ef",
+                    "path": "<Gamepad>/buttonWest",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Fire",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "c3149a78-6efc-42dd-a573-465399a29ec4",
                     "path": "<Mouse>/rightButton",
                     "interactions": "",

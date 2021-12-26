@@ -23,6 +23,10 @@ namespace NonStandard.Character {
 		/// how many seconds to hold down the jump button. if a non-zero value, a jump impulse will be applied. if zero, stop jumping.
 		/// </summary>
 		public float JumpInput { get; set; }
+		/// <summary>
+		/// how many seconds to hold down the fire button. if a non-zero value, a fire impulse will be applied. if zero, stop firing.
+		/// </summary>
+		public float FireInput { get; set; }
 		public Vector2 MoveInput {
 			get => new Vector2(move.strafeRightMovement, move.moveForwardMovement);
 			set {

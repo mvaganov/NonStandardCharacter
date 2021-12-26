@@ -1,5 +1,4 @@
-﻿using NonStandard.Utility.UnityEditor;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace NonStandard.GameUi.Inventory {
 	public class InventoryCollector : MonoBehaviour {
