@@ -78,7 +78,6 @@ namespace NonStandard.Character {
 		}
 		public void NotifyCameraRotation(InputAction.CallbackContext context) {
 			_camera?.ProcessLookRotation(context);
-
 		}
 		const string n_Player = "Player", n_MouseLook = "MouseLook", n_Move = "Move", n_Jump = "Jump", n_Look = "Look", n_Fire = "Fire", n_ToggleML = "Toggle MouseLook";
 		const string n_InputActionAsset = "FpsCharacterController", n_InputActionPath = "Assets/Resources";

@@ -82,7 +82,9 @@ namespace NonStandard.GameUi.Inventory {
 				return null;
             }
 			items.Add(inv);
-			itemAddBehavior?.onAdd?.Invoke(itemObject);
+			if (itemAddBehavior != null && itemAddBehavior.onAdd != null && itemAddBehavior.onAdd.GetPersistentEventCount() > 0) {
+				itemAddBehavior.onAdd.Invoke(itemObject);
+			}
 			return inv;
 		}
 		internal InventoryItem RemoveItem(object itemObject) {

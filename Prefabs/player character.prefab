@@ -9,7 +9,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1072249257}
-  - component: {fileID: 326571351276914367}
   - component: {fileID: 6908758505907782173}
   - component: {fileID: 225028634715740455}
   m_Layer: 0
@@ -33,18 +32,6 @@ Transform:
   m_Father: {fileID: 1988414672}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &326571351276914367
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1072249256}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 800650e67a83a6a44896beb3977903fc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &6908758505907782173
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -58,6 +45,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 8380686396385984217}
+  _camera: {fileID: 1988414674}
   onMoveInput:
     m_PersistentCalls:
       m_Calls:
@@ -89,6 +77,11 @@ MonoBehaviour:
   inputBindings:
   - name: Player/Move
     type: 1
+    controls:
+    - <Gamepad>/leftStick
+    - <XRController>/{Primary2DAxis}
+    - <Joystick>/stick
+    - ^COMPOSITE^WASD:Up:<Keyboard>/w,<Keyboard>/upArrow;Down:<Keyboard>/s,<Keyboard>/downArrow;Left:<Keyboard>/a,<Keyboard>/leftArrow;Right:<Keyboard>/d,<Keyboard>/rightArrow
     startPerformCancel:
       m_PersistentCalls:
         m_Calls:
@@ -107,6 +100,9 @@ MonoBehaviour:
           m_CallState: 2
   - name: Player/Jump
     type: 0
+    controls:
+    - <Keyboard>/space
+    - <Gamepad>/buttonSouth
     startPerformCancel:
       m_PersistentCalls:
         m_Calls:
@@ -123,8 +119,35 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+  - name: Player/Fire
+    type: 0
+    controls:
+    - <Gamepad>/rightTrigger
+    - <Mouse>/leftButton
+    - <Touchscreen>/primaryTouch/tap
+    - <Joystick>/trigger
+    - <XRController>/{PrimaryAction}
+    - <Gamepad>/buttonWest
+    startPerformCancel:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 6908758505907782173}
+          m_TargetAssemblyTypeName: NonStandard.Character.FpsCharacterController,
+            com.codegiraffe.nonstandard.character
+          m_MethodName: SetFire
+          m_Mode: 0
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: 
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
   - name: Player/Toggle MouseLook
     type: 0
+    controls:
+    - <Mouse>/rightButton
     startPerformCancel:
       m_PersistentCalls:
         m_Calls:
@@ -143,12 +166,16 @@ MonoBehaviour:
           m_CallState: 2
   - name: Player/Look
     type: 1
+    controls:
+    - <Gamepad>/rightStick
+    - <Joystick>/{Hatswitch}
     startPerformCancel:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 1988414674}
-          m_TargetAssemblyTypeName: NonStandard.Character.CharacterCamera, com.codegiraffe.nonstandard.character
-          m_MethodName: ProcessLookRotation
+        - m_Target: {fileID: 6908758505907782173}
+          m_TargetAssemblyTypeName: NonStandard.Character.FpsCharacterController,
+            com.codegiraffe.nonstandard.character
+          m_MethodName: NotifyCameraRotation
           m_Mode: 0
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
@@ -160,12 +187,17 @@ MonoBehaviour:
           m_CallState: 2
   - name: MouseLook/Look
     type: 1
+    controls:
+    - <VirtualMouse>/delta
+    - <Pointer>/delta
+    - <Mouse>/delta
     startPerformCancel:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 1988414674}
-          m_TargetAssemblyTypeName: NonStandard.Character.CharacterCamera, com.codegiraffe.nonstandard.character
-          m_MethodName: ProcessLookRotation
+        - m_Target: {fileID: 6908758505907782173}
+          m_TargetAssemblyTypeName: NonStandard.Character.FpsCharacterController,
+            com.codegiraffe.nonstandard.character
+          m_MethodName: NotifyCameraRotation
           m_Mode: 0
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
@@ -184,6 +216,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1988414672}
+  - component: {fileID: 7678674013257095938}
   - component: {fileID: 1988414671}
   - component: {fileID: 1988414670}
   - component: {fileID: 1988414674}
@@ -212,6 +245,18 @@ Transform:
   m_Father: {fileID: 8380686396385984218}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7678674013257095938
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1988414669}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 800650e67a83a6a44896beb3977903fc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!20 &1988414671
 Camera:
   m_ObjectHideFlags: 0
@@ -559,6 +604,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3672167014428103609}
+  - component: {fileID: 7047909652706191640}
   - component: {fileID: 3672167014428103612}
   - component: {fileID: 3672167014428103611}
   - component: {fileID: 3672167014428103610}
@@ -593,6 +639,18 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &7047909652706191640
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3672167014428103608}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 800650e67a83a6a44896beb3977903fc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!223 &3672167014428103612
 Canvas:
   m_ObjectHideFlags: 0
