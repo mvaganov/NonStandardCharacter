@@ -100,9 +100,15 @@ namespace NonStandard.Character {
 		public void ProcessLookRotation(InputAction.CallbackContext context) {
 			ProcessLookRotation(context.ReadValue<Vector2>());
 		}
+		public void ProcessZoom(InputAction.CallbackContext context) {
+			ProcessZoom(context.ReadValue<Vector2>());
+		}
 #endif
 		public void ProcessLookRotation(Vector2 lookRot) {
 			LookInput = lookRot;
+		}
+		public void ProcessZoom(Vector2 lookRot) {
+			ZoomInput = lookRot.y;
 		}
 		public void ToggleOrthographic() { cam.orthographic = !cam.orthographic; }
 		public void SetCameraOrthographic(bool orthographic) { cam.orthographic = orthographic; }

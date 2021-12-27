@@ -207,6 +207,26 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+  - actionName: Player/Zoom
+    controlType: 1
+    bindingPaths:
+    - <Mouse>/scroll
+    actionEventHandler:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 6908758505907782173}
+          m_TargetAssemblyTypeName: NonStandard.Character.FpsCharacterController,
+            com.codegiraffe.nonstandard.character
+          m_MethodName: NotifyCameraZoom
+          m_Mode: 0
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: 
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &1988414669
 GameObject:
   m_ObjectHideFlags: 0
@@ -320,7 +340,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a53f0bed3984fbb45aed41c84b3f9fdd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _target: {fileID: 8380686396385984218}
+  _target: {fileID: 8207741432246214857}
   clipAgainstWalls: 1
   targetDistance: 10
   userDistance: 0
@@ -1596,13 +1616,12 @@ PrefabInstance:
       propertyPath: m_Name
       value: player character
       objectReference: {fileID: 0}
+    - target: {fileID: 6458274899863389903, guid: 7508e324b3af6ed4f9372025d577b112, type: 3}
+      propertyPath: m_RootOrder
+      value: 2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7508e324b3af6ed4f9372025d577b112, type: 3}
---- !u!1 &8380686396385984222 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 4347781871269923455, guid: 7508e324b3af6ed4f9372025d577b112, type: 3}
-  m_PrefabInstance: {fileID: 5194973966512796833}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &8380686396385984217 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4347781871269923448, guid: 7508e324b3af6ed4f9372025d577b112, type: 3}
@@ -1617,6 +1636,16 @@ MonoBehaviour:
 --- !u!4 &8380686396385984218 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4347781871269923451, guid: 7508e324b3af6ed4f9372025d577b112, type: 3}
+  m_PrefabInstance: {fileID: 5194973966512796833}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &8380686396385984222 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4347781871269923455, guid: 7508e324b3af6ed4f9372025d577b112, type: 3}
+  m_PrefabInstance: {fileID: 5194973966512796833}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &8207741432246214857 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4179199806875309160, guid: 7508e324b3af6ed4f9372025d577b112, type: 3}
   m_PrefabInstance: {fileID: 5194973966512796833}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &5382782562953719924
