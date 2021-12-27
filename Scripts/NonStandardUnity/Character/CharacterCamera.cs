@@ -43,6 +43,7 @@ namespace NonStandard.Character {
 		public float maxVerticalAngle = 100, minVerticalAngle = -100;
 		public Vector2 inputMultiplier = Vector2.one;
 
+		public Camera Camera => cam;
 		public Transform target { get { return _target; } 
 			set {
 				//Debug.Log("target! "+Show.GetStack(10));

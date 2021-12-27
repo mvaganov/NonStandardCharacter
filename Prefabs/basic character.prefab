@@ -228,7 +228,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rb: {fileID: 0}
-  head: {fileID: 0}
+  head: {fileID: 4179199806875309160}
   move:
     speed: 5
     maxStableAngle: 60
@@ -405,7 +405,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4179199806875309160}
   m_Layer: 0
-  m_Name: head position
+  m_Name: head transform
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -37,10 +37,10 @@ namespace NonStandard.Character {
 			}
 		}
 		public Vector2 MoveInput {
-			get => new Vector2(move.strafeRightMovement, move.moveForwardMovement);
+			get => new Vector2(move.StrafeRightMovement, move.MoveForwardMovement);
 			set {
-				move.strafeRightMovement = value.x;
-				move.moveForwardMovement = value.y;
+				move.StrafeRightMovement = value.x;
+				move.MoveForwardMovement = value.y;
 			}
         }
 		/// <summary>
@@ -51,8 +51,8 @@ namespace NonStandard.Character {
 		public float JumpHeight { get { return jump.max; } set { jump.max = value; } }
 		private float lastJump = -1;
 		private float fireInput;
-		public float StrafeRightMovement { get { return move.strafeRightMovement; } set { move.strafeRightMovement = value; } }
-		public float MoveForwardMovement { get { return move.moveForwardMovement; } set { move.moveForwardMovement = value; } }
+		public float StrafeRightMovement { get { return move.StrafeRightMovement; } set { move.StrafeRightMovement = value; } }
+		public float MoveForwardMovement { get { return move.MoveForwardMovement; } set { move.MoveForwardMovement = value; } }
 
 #if ENABLE_INPUT_SYSTEM
 		public void SetMove(InputAction.CallbackContext context) {
@@ -113,7 +113,7 @@ namespace NonStandard.Character {
 		public void DisableAutoMove() {
 			move.automaticMovement.DisableAutoMove();
 			MoveForwardMovement = StrafeRightMovement = 0;
-			move.moveDirection = move.oppositionDirection;
+			move.MoveDirection = move.OppositionDirection;
 		}
 		public void GetLocalCapsule(out Vector3 top, out Vector3 bottom, out float rad) {
 			float h = capsule.height / 2f;
@@ -145,16 +145,15 @@ namespace NonStandard.Character {
 			public bool maintainSpeedAgainstWall;
 			[Tooltip("Force movement, ignoring physics system. Allows movement during paused game.")]
 			public bool systemMovement;
-			[HideInInspector] public bool isStableOnGround;
-			[HideInInspector] public float strafeRightMovement;
-			[HideInInspector] public float moveForwardMovement;
-			[HideInInspector] public float turnClockwise;
+			[HideInInspector] public bool IsStableOnGround;
+			[HideInInspector] public float StrafeRightMovement;
+			[HideInInspector] public float MoveForwardMovement;
 
-			[HideInInspector] public Vector3 moveDirection;
+			[HideInInspector] public Vector3 MoveDirection;
 			[HideInInspector] public Vector3 groundNormal; // TODO refactor in CharacterMove
-			[HideInInspector] public Vector3 oppositionDirection;
-			[HideInInspector] public Vector3 lastVelocity;
-			[HideInInspector] public Vector3 lastOppositionDirection;
+			[HideInInspector] public Vector3 OppositionDirection;
+			[HideInInspector] public Vector3 LastVelocity;
+			[HideInInspector] public Vector3 LastOppositionDirection;
 
 			[Tooltip("Set this to enable movement based on how a camera is looking")]
 			public Transform orientationTransform;
@@ -178,12 +177,12 @@ namespace NonStandard.Character {
 				return intention;
 			}
 			public Vector3 AccountForBlocks(Vector3 moveVelocity) {
-				if (oppositionDirection != Vector3.zero) {
-					float opposition = -Vector3.Dot(moveDirection, oppositionDirection);
+				if (OppositionDirection != Vector3.zero) {
+					float opposition = -Vector3.Dot(MoveDirection, OppositionDirection);
 					if (opposition > 0) {
 						float s = speed;
 						if (maintainSpeedAgainstWall) { s = moveVelocity.magnitude; }
-						moveVelocity += opposition * oppositionDirection;
+						moveVelocity += opposition * OppositionDirection;
 						if (maintainSpeedAgainstWall) { moveVelocity.Normalize(); moveVelocity *= s; }
 					}
 				}
@@ -193,35 +192,35 @@ namespace NonStandard.Character {
 			public void ApplyMoveFromInput(CharacterMove cm) {
 				Vector3 moveVelocity = Vector3.zero;
 				Transform t = cm.body;
-				Vector3 oldDirection = moveDirection;
-				moveDirection = new Vector3(strafeRightMovement, 0, moveForwardMovement);
+				Vector3 oldDirection = MoveDirection;
+				MoveDirection = new Vector3(StrafeRightMovement, 0, MoveForwardMovement);
 				float intendedSpeed = 1;
-				if (moveDirection != Vector3.zero) {
-					moveDirection = ConvertIntentionToRealDirection(moveDirection, t, out intendedSpeed);
+				if (MoveDirection != Vector3.zero) {
+					MoveDirection = ConvertIntentionToRealDirection(MoveDirection, t, out intendedSpeed);
 					if (intendedSpeed > 1) { intendedSpeed = 1; }
 					// else { Debug.Log(intendedSpeed); }
 				}
 				if (automaticMovement.enabled) {
-					if (moveDirection == Vector3.zero) {
+					if (MoveDirection == Vector3.zero) {
 						if (!automaticMovement.arrived) {
-							moveDirection = automaticMovement.CalculateMoveDirection(t.position, speed * intendedSpeed, Vector3.up, ref automaticMovement.arrived);
+							MoveDirection = automaticMovement.CalculateMoveDirection(t.position, speed * intendedSpeed, Vector3.up, ref automaticMovement.arrived);
 							if (automaticMovement.arrived) { cm.callbacks?.arrived?.Invoke(automaticMovement.targetPosition); }
 						}
 					} else {
 						automaticMovement.arrived = true; // if the player is providing input, stop calculating automatic movement
 					}
 				}
-				if (moveDirection != Vector3.zero) {
-					moveVelocity = AccountForBlocks(moveDirection);
+				if (MoveDirection != Vector3.zero) {
+					moveVelocity = AccountForBlocks(MoveDirection);
 					// apply the direction-adjusted movement to the velocity
 					moveVelocity *= (speed * intendedSpeed);
 				}
-				if(moveDirection != oldDirection) { cm.callbacks?.moveDirectionChanged?.Invoke(moveDirection); }
+				if(MoveDirection != oldDirection) { cm.callbacks?.moveDirectionChanged?.Invoke(MoveDirection); }
 				float gravity = cm.rb.velocity.y; // get current gravity
 				moveVelocity.y = gravity; // apply to new velocity
-				if(lookForwardMoving && moveDirection != Vector3.zero && orientationTransform != null)
+				if(lookForwardMoving && MoveDirection != Vector3.zero && orientationTransform != null)
 				{
-					cm.body.rotation = Quaternion.LookRotation(moveDirection, Vector3.up);
+					cm.body.rotation = Quaternion.LookRotation(MoveDirection, Vector3.up);
 					if(cm.head != null) { cm.head.localRotation = Quaternion.identity; } // turn head straight while walking
 				}
 				if (!systemMovement) {
@@ -229,17 +228,17 @@ namespace NonStandard.Character {
 				} else {
 					cm.body.position += moveVelocity * Time.unscaledDeltaTime;
 				}
-				lastVelocity = moveVelocity;
-				if(oppositionDirection == Vector3.zero && lastOppositionDirection != Vector3.zero)
+				LastVelocity = moveVelocity;
+				if(OppositionDirection == Vector3.zero && LastOppositionDirection != Vector3.zero)
 				{
 					cm.callbacks?.wallCollisionStopped?.Invoke(); // done colliding
-					lastOppositionDirection = Vector3.zero;
+					LastOppositionDirection = Vector3.zero;
 				}
-				oppositionDirection = Vector3.zero;
+				OppositionDirection = Vector3.zero;
 			}
 			public void FixedUpdate(CharacterMove c) {
-				if (isStableOnGround || canMoveInAir) {
-					if(isStableOnGround) {
+				if (IsStableOnGround || canMoveInAir) {
+					if(IsStableOnGround) {
 						c.jump.MarkStableJumpPoint(c.body.position); 
 					}
 					ApplyMoveFromInput(c);
@@ -253,7 +252,7 @@ namespace NonStandard.Character {
 			/// <param name="collision"></param>
 			/// <returns>the index of collision that could cause stability</returns>
 			public int CollisionStabilityCheck(CharacterMove cm, Collision collision) {
-				float biggestOpposition = -Vector3.Dot(moveDirection, oppositionDirection);
+				float biggestOpposition = -Vector3.Dot(MoveDirection, OppositionDirection);
 				int stableIndex = -1, wallCollisions = -1;
 				Vector3 standingNormal = Vector3.zero;
 				// identify that the character is on the ground if it's colliding with something that is angled like ground
@@ -261,15 +260,15 @@ namespace NonStandard.Character {
 					Vector3 surfaceNormal = collision.contacts[i].normal;
 					float a = Vector3.Angle(Vector3.up, surfaceNormal);
 					if (a <= maxStableAngle) {
-						isStableOnGround = true;
+						IsStableOnGround = true;
 						stableIndex = i;
 						standingNormal = surfaceNormal;
 					} else {
-						float opposition = -Vector3.Dot(moveDirection, surfaceNormal);
+						float opposition = -Vector3.Dot(MoveDirection, surfaceNormal);
 						if(opposition > biggestOpposition) {
 							biggestOpposition = opposition;
 							wallCollisions = i;
-							oppositionDirection = surfaceNormal;
+							OppositionDirection = surfaceNormal;
 						}
 						if(automaticMovement.jumpAtObstacle){
 							cm.jump.TimedJumpPress = cm.jump.fullPressDuration;
@@ -277,10 +276,10 @@ namespace NonStandard.Character {
 					}
 				}
 				if(wallCollisions != -1) {
-					if (lastOppositionDirection != oppositionDirection) {
-						cm.callbacks?.wallCollisionStart?.Invoke(oppositionDirection);
+					if (LastOppositionDirection != OppositionDirection) {
+						cm.callbacks?.wallCollisionStart?.Invoke(OppositionDirection);
 					}
-					lastOppositionDirection = oppositionDirection;
+					LastOppositionDirection = OppositionDirection;
 				}
 				return stableIndex;
 			}
@@ -294,7 +293,7 @@ namespace NonStandard.Character {
 		};
 
 		public float GetJumpProgress() {
-			return move.isStableOnGround ? 1 : (1 - ((float)(jump.usedDoubleJumps+1) / (jump.doubleJumps+1)));
+			return move.IsStableOnGround ? 1 : (1 - ((float)(jump.usedDoubleJumps+1) / (jump.doubleJumps+1)));
 		}
 		private void Update() {
 			if (move.systemMovement && !move.disabled && Time.timeScale ==0) { move.FixedUpdate(this); }
@@ -313,20 +312,20 @@ namespace NonStandard.Character {
 					callbacks?.jumped?.Invoke(Vector3.up);
 				}
 			}
-			if (!move.isStableOnGround && !jump.isJumping && move.groundNormal != Vector3.zero) {
+			if (!move.IsStableOnGround && !jump.isJumping && move.groundNormal != Vector3.zero) {
 				move.groundNormal = Vector3.zero;
 				callbacks?.fall?.Invoke();
 			}
-			move.isStableOnGround = false; // invalidate stability *after* jump state is calculated
+			move.IsStableOnGround = false; // invalidate stability *after* jump state is calculated
 		}
 
 		public bool IsStableOnGround() {
-			return move.isStableOnGround;
+			return move.IsStableOnGround;
 		}
 
 		private void OnCollisionStay(Collision collision) {
-			if (collision.impulse != Vector3.zero && move.moveDirection != Vector3.zero && Vector3.Dot(collision.impulse.normalized, move.moveDirection) < -.75f) {
-				rb.velocity = move.lastVelocity; // on a real collision, very much intentionally against a wall, maintain velocity
+			if (collision.impulse != Vector3.zero && move.MoveDirection != Vector3.zero && Vector3.Dot(collision.impulse.normalized, move.MoveDirection) < -.75f) {
+				rb.velocity = move.LastVelocity; // on a real collision, very much intentionally against a wall, maintain velocity
 			}
 			int contactThatMakesStability = move.CollisionStabilityCheck(this, collision);
 			if(contactThatMakesStability >= 0) {
@@ -340,7 +339,7 @@ namespace NonStandard.Character {
 
 		private void OnCollisionEnter(Collision collision) {
 			if (collision.impulse != Vector3.zero && move.CollisionStabilityCheck(this, collision) < 0) {
-				rb.velocity = move.lastVelocity; // on a real collision, where the player is unstable, maintain velocity
+				rb.velocity = move.LastVelocity; // on a real collision, where the player is unstable, maintain velocity
 			}
 			jump.Interrupt(); //jump.collided = true;
 		}
@@ -420,11 +419,11 @@ namespace NonStandard.Character {
 				}
 				bool lateButForgiven = false;
 				ulong late = 0;
-				if (cm.move.isStableOnGround) { usedDoubleJumps = 0; } else if (jpress && forgiveLateJumps && (late = Now - stableTime) < jumpLagForgivenessMs) {
+				if (cm.move.IsStableOnGround) { usedDoubleJumps = 0; } else if (jpress && forgiveLateJumps && (late = Now - stableTime) < jumpLagForgivenessMs) {
 					stableTime = 0;
-					cm.move.isStableOnGround = lateButForgiven = true;
+					cm.move.IsStableOnGround = lateButForgiven = true;
 				}
-				if (jpress && cm.move.isStableOnGround && !isJumping && now - timePressed < jumpTooEarlyForgivenessMs) {
+				if (jpress && cm.move.IsStableOnGround && !isJumping && now - timePressed < jumpTooEarlyForgivenessMs) {
 					timePressed = 0;
 					if (!lateButForgiven) { Start(cm.body.position); } else { Start(position); jumpTime -= late; }
 				}
