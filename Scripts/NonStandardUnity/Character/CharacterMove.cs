@@ -26,7 +26,16 @@ namespace NonStandard.Character {
 		/// <summary>
 		/// how many seconds to hold down the fire button. if a non-zero value, a fire impulse will be applied. if zero, stop firing.
 		/// </summary>
-		public float FireInput { get; set; }
+		public float FireInput { get => fireInput;
+			set {
+				if (fireInput > 0) {
+					if (value <= 0) { callbacks?.fireReleased?.Invoke(); }
+                } else {
+					if (value > 0) { callbacks?.firePressed?.Invoke(); }
+				}
+				fireInput = value;
+			}
+		}
 		public Vector2 MoveInput {
 			get => new Vector2(move.strafeRightMovement, move.moveForwardMovement);
 			set {
@@ -41,6 +50,7 @@ namespace NonStandard.Character {
 		public float MoveSpeed { get { return move.speed; } set { move.speed = value; } }
 		public float JumpHeight { get { return jump.max; } set { jump.max = value; } }
 		private float lastJump = -1;
+		private float fireInput;
 		public float StrafeRightMovement { get { return move.strafeRightMovement; } set { move.strafeRightMovement = value; } }
 		public float MoveForwardMovement { get { return move.moveForwardMovement; } set { move.moveForwardMovement = value; } }
 
@@ -294,6 +304,7 @@ namespace NonStandard.Character {
 				jump.Pressed = JumpInput > 0;//jump.PressJump = Jump;
 				lastJump = JumpInput;
 			}
+			if (FireInput > 0) { FireInput -= Time.deltaTime; }
 			if (!move.disabled) { move.FixedUpdate(this); }
 			if (jump.enabled) {
 				bool wasJumping = jump.isJumping;
@@ -550,6 +561,10 @@ namespace NonStandard.Character {
 			public UnityEvent_Vector3 wallCollisionStart;
 			[Tooltip("when player is no longer colliding with a wall")]
 			public UnityEvent wallCollisionStopped;
+			[Tooltip("when player indicates the desire to 'fire'")]
+			public UnityEvent firePressed;
+			[Tooltip("when player indicates the desire to cease fire")]
+			public UnityEvent fireReleased;
 			[Tooltip("when auto-moving player reaches their goal, passes absolute location of the goal")]
 			public UnityEvent_Vector3 arrived;
             public void Initialize() {
