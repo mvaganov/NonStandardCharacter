@@ -1,6 +1,8 @@
 ﻿using NonStandard.Inputs;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
 namespace NonStandard.Character {
@@ -69,7 +71,18 @@ namespace NonStandard.Character {
 				case InputActionPhase.Canceled: JumpInput = 0; break;
 			}
 		}
+		public static bool IsPointerOverUIObject() {
+			PointerEventData eventDataCurrentPosition = new PointerEventData(EventSystem.current);
+			eventDataCurrentPosition.position = Mouse.current.position.ReadValue();
+			List<RaycastResult> results = new List<RaycastResult>();
+			EventSystem.current.RaycastAll(eventDataCurrentPosition, results);
+			return results.Count > 0;
+		}
 		public void SetFire(InputAction.CallbackContext context) {
+			// ignore clicks when mouse is over UI
+			if (context.control.path == "/Mouse/leftButton" && IsPointerOverUIObject()) {
+				return;
+            }
 			switch (context.phase) {
 				case InputActionPhase.Started: FireInput = float.PositiveInfinity; break;
 				case InputActionPhase.Canceled: FireInput = 0; break;
@@ -113,8 +126,10 @@ namespace NonStandard.Character {
 			}
 			if (pleaseCreateInputActionAsset) {
 				userInput.inputActionAsset.name = n_InputActionPath;
+#if UNITY_EDITOR
 				userInput.inputActionAsset = ScriptableObjectUtility.SaveScriptableObjectAsAsset(userInput.inputActionAsset,
 					n_InputActionAsset + "." + InputActionAsset.Extension, n_InputActionPath, userInput.inputActionAsset.ToJson()) as InputActionAsset;
+#endif
 			}
 		}
 #endif
