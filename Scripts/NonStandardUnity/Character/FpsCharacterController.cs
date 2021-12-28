@@ -10,11 +10,14 @@ namespace NonStandard.Character {
 		[Tooltip("What character is being controlled (right-click to add default controls)")]
 		[ContextMenuItem("Add default user controls", "CreateDefaultUserControls")]
 		[SerializeField] protected CharacterRoot target;
+		protected CharacterRoot lastTarget;
 		[Tooltip("What camera is being controlled")]
 		[SerializeField] protected CharacterCamera _camera;
 		InputActionMap mouselookActionMap;
 		public UnityEvent_Vector2 onMoveInput;
+		public UnityEvent_float onJumpPowerProgress;
 		[System.Serializable] public class UnityEvent_Vector2 : UnityEvent<Vector2> { }
+		[System.Serializable] public class UnityEvent_float : UnityEvent<float> { }
 		public Transform MoveTransform {
 			get { return target != null ? target.transform : null; }
 			set {
@@ -54,6 +57,7 @@ namespace NonStandard.Character {
 				onMoveInput?.Invoke(value);
 			}
 		}
+		public void NotifyJumpPowerProgress(float power) { onJumpPowerProgress?.Invoke(power); }
 		public bool IsAutoMoving() { return target.move.IsAutoMoving(); }
 		public void SetAutoMovePosition(Vector3 position, System.Action whatToDoWhenTargetIsReached = null, float closeEnough = 0) {
 			if (target != null) { target.move.SetAutoMovePosition(position, whatToDoWhenTargetIsReached, closeEnough); }
@@ -124,6 +128,7 @@ namespace NonStandard.Character {
 			foreach(Binding b in bindings) {
 				userInput.AddBinding(b);
 			}
+			userInput.actionMapToBindOnStart = new string[] { n_Player };
 			if (pleaseCreateInputActionAsset) {
 				userInput.inputActionAsset.name = n_InputActionPath;
 #if UNITY_EDITOR
@@ -146,6 +151,17 @@ namespace NonStandard.Character {
 				case InputActionPhase.Canceled: mouselookActionMap.Disable(); break;
 			}
 		}
+        private void Update() {
+			if (lastTarget != target) {
+				if (lastTarget != null) {
+					EventBind.Remove(lastTarget.move.jump.OnJumpPowerProgress, this, nameof(NotifyJumpPowerProgress));
+				}
+				if (target != null && target.move != null && target.move.jump != null) {
+					EventBind.On(target.move.jump.OnJumpPowerProgress, this, nameof(NotifyJumpPowerProgress));
+				}
+				lastTarget = target;
+			}
+        }
 #else
 		CharacterCamera _camera;
 		void Start() {
@@ -161,5 +177,5 @@ namespace NonStandard.Character {
 			}
 		}
 #endif
-	}
+    }
 }

@@ -388,6 +388,9 @@ namespace NonStandard.Character {
 			protected ulong timePressed;
 			/// <summary>How many double jumps have happend since being on the ground</summary>
 			[HideInInspector] public int usedDoubleJumps;
+			public UnityEvent_float OnJumpPowerProgress;
+			[System.Serializable] public class UnityEvent_float : UnityEvent<float> { }
+
 			/*
 			/// <summary>debug artifact, for seeing the jump arc</summary>
 			[HideInInspector] Wire jumpArc;
@@ -466,6 +469,7 @@ namespace NonStandard.Character {
 			private void CalcJumpOverTime(ulong jumpMsSoFar, float gForce, out float yPos, out float yVel) {
 				float jumptiming = jumpMsSoFar / 1000f;
 				float jumpP = Mathf.Min(jumptiming / fullPressDuration, 1);
+				OnJumpPowerProgress?.Invoke(jumpP);
 				if (jumpP >= 1) { heightSet = true; }
 				targetJumpHeight = (max - min) * jumpP + min;
 				float jVelocity = CalcJumpVelocity(targetJumpHeight, gForce);
