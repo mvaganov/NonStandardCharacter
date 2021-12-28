@@ -83,10 +83,8 @@ namespace NonStandard.Character {
 			return results.Count > 0;
 		}
 		public void SetFire(InputAction.CallbackContext context) {
-			// ignore clicks when mouse is over UI
-			if (context.control.path == "/Mouse/leftButton" && IsPointerOverUIObject()) {
-				return;
-            }
+			// ignore mouse when over UI
+			if (context.control.path.StartsWith("/Mouse/") && IsPointerOverUIObject()) { return; }
 			switch (context.phase) {
 				case InputActionPhase.Started: FireInput = float.PositiveInfinity; break;
 				case InputActionPhase.Canceled: FireInput = 0; break;
@@ -96,6 +94,7 @@ namespace NonStandard.Character {
 			_camera?.ProcessLookRotation(context);
 		}
 		public void NotifyCameraZoom(InputAction.CallbackContext context) {
+			if (context.control.path.StartsWith("/Mouse/") && IsPointerOverUIObject()) { return; }
 			_camera?.ProcessZoom(context);
 		}
 		const string n_Player = "Player", n_MouseLook = "MouseLook", n_Move = "Move", n_Jump = "Jump", n_Look = "Look", n_Zoom = "Zoom", n_Fire = "Fire", n_ToggleML = "Toggle MouseLook";
