@@ -90,7 +90,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   inputActionAsset: {fileID: -944628639613478452, guid: 36e2e8f9bff79394db718929b3947520, type: 3}
   inputBindings:
-  - actionName: Player/Move
+  - description: move with player
+    actionName: Player/Move
     controlType: 1
     bindingPaths:
     - <Gamepad>/leftStick
@@ -113,7 +114,8 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
-  - actionName: Player/Jump
+  - description: jump with player
+    actionName: Player/Jump
     controlType: 0
     bindingPaths:
     - <Keyboard>/space
@@ -134,7 +136,8 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
-  - actionName: Player/Fire
+  - description: shoot with player
+    actionName: Player/Fire
     controlType: 0
     bindingPaths:
     - <Gamepad>/rightTrigger
@@ -159,7 +162,8 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
-  - actionName: Player/Toggle MouseLook
+  - description: toggle mouse look
+    actionName: Player/Toggle MouseLook
     controlType: 0
     bindingPaths:
     - <Mouse>/rightButton
@@ -179,7 +183,8 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
-  - actionName: Player/Look
+  - description: rotate camera
+    actionName: Player/Look
     controlType: 1
     bindingPaths:
     - <Gamepad>/rightStick
@@ -200,7 +205,8 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
-  - actionName: MouseLook/Look
+  - description: '"mouse look" rotate camera with mouse'
+    actionName: MouseLook/Look
     controlType: 1
     bindingPaths:
     - <VirtualMouse>/delta
@@ -222,7 +228,8 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
-  - actionName: Player/Zoom
+  - description: zoom camera
+    actionName: Player/Zoom
     controlType: 1
     bindingPaths:
     - <Mouse>/scroll
@@ -242,7 +249,8 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
-  actionMapToBindOnStart: []
+  actionMapToBindOnStart:
+  - Player
 --- !u!1 &1988414669
 GameObject:
   m_ObjectHideFlags: 0

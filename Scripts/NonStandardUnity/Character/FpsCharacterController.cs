@@ -115,15 +115,15 @@ namespace NonStandard.Character {
 				userInput.inputActionAsset = ScriptableObject.CreateInstance<InputActionAsset>();
 			}
 			Binding[] bindings = new Binding[] {
-				new Binding(n_Player+"/"+n_Move,    ControlType.Vector2, new EventBind(this, nameof(this.SetMove)), new string[] {"<Gamepad>/leftStick", "<XRController>/{Primary2DAxis}", "<Joystick>/stick",
+				new Binding("move with player", n_Player+"/"+n_Move,    ControlType.Vector2, new EventBind(this, nameof(this.SetMove)), new string[] {"<Gamepad>/leftStick", "<XRController>/{Primary2DAxis}", "<Joystick>/stick",
 					Binding.CompositePrefix+"WASD:"+"Up:<Keyboard>/w,<Keyboard>/upArrow;Down:<Keyboard>/s,<Keyboard>/downArrow;Left:<Keyboard>/a,<Keyboard>/leftArrow;Right:<Keyboard>/d,<Keyboard>/rightArrow"}),
-				new Binding(n_Player+"/"+n_Jump,    ControlType.Button,  new EventBind(this, nameof(this.SetJump)), new string[] {"<Keyboard>/space","<Gamepad>/buttonSouth"}),
-				new Binding(n_Player + "/" + n_Fire,ControlType.Button,  new EventBind(this, nameof(this.SetFire)), new string[] {
+				new Binding("jump with player", n_Player+"/"+n_Jump,    ControlType.Button,  new EventBind(this, nameof(this.SetJump)), new string[] {"<Keyboard>/space","<Gamepad>/buttonSouth"}),
+				new Binding("shoot with player", n_Player + "/" + n_Fire,ControlType.Button,  new EventBind(this, nameof(this.SetFire)), new string[] {
 				"<Gamepad>/rightTrigger","<Mouse>/leftButton","<Touchscreen>/primaryTouch/tap","<Joystick>/trigger","<XRController>/{PrimaryAction}","<Gamepad>/buttonWest"}),
-				new Binding(n_Player+"/"+n_ToggleML,ControlType.Button,  new EventBind(this, nameof(BindMouselookInputMapToButton)), new string[] { "<Mouse>/rightButton" }),
-				new Binding(n_Player+"/"+n_Look,    ControlType.Vector2, new EventBind(this, nameof(NotifyCameraRotation)), new string[] { "<Gamepad>/rightStick", "<Joystick>/{Hatswitch}" }),
-				new Binding(n_MouseLook+"/"+n_Look, ControlType.Vector2, new EventBind(this, nameof(NotifyCameraRotation)), new string[] { "<VirtualMouse>/delta", "<Pointer>/delta", "<Mouse>/delta" }),
-				new Binding(n_Player+"/"+n_Zoom,    ControlType.Vector2, new EventBind(this, nameof(NotifyCameraZoom)), new string[] { "<Mouse>/scroll" }),
+				new Binding("toggle mouse look", n_Player+"/"+n_ToggleML,ControlType.Button,  new EventBind(this, nameof(BindMouselookInputMapToButton)), new string[] { "<Mouse>/rightButton" }),
+				new Binding("rotate camera", n_Player+"/"+n_Look,    ControlType.Vector2, new EventBind(this, nameof(NotifyCameraRotation)), new string[] { "<Gamepad>/rightStick", "<Joystick>/{Hatswitch}" }),
+				new Binding("\"mouse look\" rotate camera with mouse", n_MouseLook+"/"+n_Look, ControlType.Vector2, new EventBind(this, nameof(NotifyCameraRotation)), new string[] { "<VirtualMouse>/delta", "<Pointer>/delta", "<Mouse>/delta" }),
+				new Binding("zoom camera", n_Player+"/"+n_Zoom,    ControlType.Vector2, new EventBind(this, nameof(NotifyCameraZoom)), new string[] { "<Mouse>/scroll" }),
 			};
 			foreach(Binding b in bindings) {
 				userInput.AddBinding(b);
