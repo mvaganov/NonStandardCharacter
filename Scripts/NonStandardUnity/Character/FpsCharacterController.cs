@@ -75,16 +75,9 @@ namespace NonStandard.Character {
 				case InputActionPhase.Canceled: JumpInput = 0; break;
 			}
 		}
-		public static bool IsPointerOverUIObject() {
-			PointerEventData eventDataCurrentPosition = new PointerEventData(EventSystem.current);
-			eventDataCurrentPosition.position = Mouse.current.position.ReadValue();
-			List<RaycastResult> results = new List<RaycastResult>();
-			EventSystem.current.RaycastAll(eventDataCurrentPosition, results);
-			return results.Count > 0;
-		}
 		public void SetFire(InputAction.CallbackContext context) {
 			// ignore mouse when over UI
-			if (context.control.path.StartsWith("/Mouse/") && IsPointerOverUIObject()) { return; }
+			if (context.control.path.StartsWith("/Mouse/") && UserInput.IsMouseOverUIObject()) { return; }
 			switch (context.phase) {
 				case InputActionPhase.Started: FireInput = float.PositiveInfinity; break;
 				case InputActionPhase.Canceled: FireInput = 0; break;
@@ -94,7 +87,7 @@ namespace NonStandard.Character {
 			_camera?.ProcessLookRotation(context);
 		}
 		public void NotifyCameraZoom(InputAction.CallbackContext context) {
-			if (context.control.path.StartsWith("/Mouse/") && IsPointerOverUIObject()) { return; }
+			if (context.control.path.StartsWith("/Mouse/") && UserInput.IsMouseOverUIObject()) { return; }
 			_camera?.ProcessZoom(context);
 		}
 		const string n_Player = "Player", n_MouseLook = "MouseLook", n_Move = "Move", n_Jump = "Jump", n_Look = "Look", n_Zoom = "Zoom", n_Fire = "Fire", n_ToggleML = "Toggle MouseLook";

@@ -26,16 +26,7 @@ namespace NonStandard.Character {
 		/// <summary>
 		/// how many seconds to hold down the fire button. if a non-zero value, a fire impulse will be applied. if zero, stop firing.
 		/// </summary>
-		public float FireInput { get => fireInput;
-			set {
-				if (fireInput > 0) {
-					if (value <= 0) { callbacks?.fireReleased?.Invoke(); }
-                } else {
-					if (value > 0) { callbacks?.firePressed?.Invoke(); }
-				}
-				fireInput = value;
-			}
-		}
+		public float FireInput { get => action.FireInput; set => action.FireInput = value; }
 		public Vector2 MoveInput {
 			get => new Vector2(move.StrafeRightMovement, move.MoveForwardMovement);
 			set {
@@ -50,7 +41,6 @@ namespace NonStandard.Character {
 		public float MoveSpeed { get { return move.speed; } set { move.speed = value; } }
 		public float JumpHeight { get { return jump.max; } set { jump.max = value; } }
 		private float lastJump = -1;
-		private float fireInput;
 		public float StrafeRightMovement { get { return move.StrafeRightMovement; } set { move.StrafeRightMovement = value; } }
 		public float MoveForwardMovement { get { return move.MoveForwardMovement; } set { move.MoveForwardMovement = value; } }
 
@@ -62,6 +52,12 @@ namespace NonStandard.Character {
             switch (context.phase) {
 				case InputActionPhase.Started: JumpInput = float.PositiveInfinity; break;
 				case InputActionPhase.Canceled: JumpInput = 0; break;
+			}
+		}
+		public void SetFireAction(InputAction.CallbackContext context) {
+			switch (context.phase) {
+				case InputActionPhase.Started: FireInput = float.PositiveInfinity; break;
+				case InputActionPhase.Canceled: FireInput = 0; break;
 			}
 		}
 #endif
@@ -158,10 +154,11 @@ namespace NonStandard.Character {
 			[Tooltip("Set this to enable movement based on how a camera is looking")]
 			public Transform orientationTransform;
 
-			Vector3 ConvertIntentionToRealDirection(Vector3 intention, Transform playerTransform, out float speed) {
+			Vector3 ConvertIntentionToRealDirection(Vector3 intention, Transform playerTransform, out float speed, bool onGround) {
 				speed = intention.magnitude;
 				if (orientationTransform) {
 					intention = orientationTransform.TransformDirection(intention);
+					if (!onGround) { return intention / speed; }
 					Vector3 lookForward = orientationTransform.forward;
 					Vector3 lookRight = orientationTransform.right;
 					Vector3 groundNormal = Vector3.up;
@@ -196,7 +193,7 @@ namespace NonStandard.Character {
 				MoveDirection = new Vector3(StrafeRightMovement, 0, MoveForwardMovement);
 				float intendedSpeed = 1;
 				if (MoveDirection != Vector3.zero) {
-					MoveDirection = ConvertIntentionToRealDirection(MoveDirection, t, out intendedSpeed);
+					MoveDirection = ConvertIntentionToRealDirection(MoveDirection, t, out intendedSpeed, cm.rb.useGravity);
 					if (intendedSpeed > 1) { intendedSpeed = 1; }
 					// else { Debug.Log(intendedSpeed); }
 				}
@@ -215,13 +212,15 @@ namespace NonStandard.Character {
 					// apply the direction-adjusted movement to the velocity
 					moveVelocity *= (speed * intendedSpeed);
 				}
-				if(MoveDirection != oldDirection) { cm.callbacks?.moveDirectionChanged?.Invoke(MoveDirection); }
+				if (MoveDirection != oldDirection) { cm.callbacks?.moveDirectionChanged?.Invoke(MoveDirection); }
 				float gravity = cm.rb.velocity.y; // get current gravity
-				moveVelocity.y = gravity; // apply to new velocity
+				if (cm.rb.useGravity) {
+					moveVelocity.y = gravity; // apply to new velocity
+				}
 				if(lookForwardMoving && MoveDirection != Vector3.zero && orientationTransform != null)
 				{
 					cm.body.rotation = Quaternion.LookRotation(MoveDirection, Vector3.up);
-					if(cm.head != null) { cm.head.localRotation = Quaternion.identity; } // turn head straight while walking
+					if(cm.head != null && cm.head != cm.transform) { cm.head.localRotation = Quaternion.identity; } // turn head straight while walking
 				}
 				if (!systemMovement) {
 					cm.rb.velocity = moveVelocity;
@@ -303,7 +302,7 @@ namespace NonStandard.Character {
 				jump.Pressed = JumpInput > 0;//jump.PressJump = Jump;
 				lastJump = JumpInput;
 			}
-			if (FireInput > 0) { FireInput -= Time.deltaTime; }
+			action.FixedUpdate(this);
 			if (!move.disabled) { move.FixedUpdate(this); }
 			if (jump.enabled) {
 				bool wasJumping = jump.isJumping;
@@ -547,6 +546,31 @@ namespace NonStandard.Character {
 			}
 		}
 
+		[Tooltip("hooks that allow code execution when character executes their action")]
+		public ActModule action = new ActModule();
+		[System.Serializable]
+		public class ActModule {
+			public float input;
+			public float FireInput {
+				get => input;
+				set {
+					if (input > 0) {
+						if (value <= 0) { fireReleased?.Invoke(); }
+					} else {
+						if (value > 0) { firePressed?.Invoke(); }
+					}
+					input = value;
+				}
+			}
+			[Tooltip("when player indicates the desire to 'fire'")]
+			public UnityEvent firePressed;
+			[Tooltip("when player indicates the desire to cease fire")]
+			public UnityEvent fireReleased;
+			public void FixedUpdate(CharacterMove cm) {
+				if (FireInput > 0) { FireInput -= Time.deltaTime; }
+			}
+		}
+
 		[Tooltip("hooks that allow code execution when character state changes (useful for animation)")]
 		public Callbacks callbacks = new Callbacks();
 
@@ -564,10 +588,6 @@ namespace NonStandard.Character {
 			public UnityEvent_Vector3 wallCollisionStart;
 			[Tooltip("when player is no longer colliding with a wall")]
 			public UnityEvent wallCollisionStopped;
-			[Tooltip("when player indicates the desire to 'fire'")]
-			public UnityEvent firePressed;
-			[Tooltip("when player indicates the desire to cease fire")]
-			public UnityEvent fireReleased;
 			[Tooltip("when auto-moving player reaches their goal, passes absolute location of the goal")]
 			public UnityEvent_Vector3 arrived;
             public void Initialize() {
