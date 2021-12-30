@@ -1,8 +1,6 @@
 ﻿using NonStandard.Inputs;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
 namespace NonStandard.Character {
@@ -169,5 +167,20 @@ namespace NonStandard.Character {
 			}
 		}
 #endif
-    }
+		public static FpsCharacterController GetCharacterControllerOf(Transform t) {
+			FpsCharacterController fps = t.GetComponentInChildren<FpsCharacterController>();
+			if (fps == null) { t = t.parent; }
+			return t != null ? GetCharacterControllerOf(t) : null;
+		}
+		public static CharacterCamera GetCharacterCamera() {
+			CharacterCamera[] ccs = FindObjectsOfType<CharacterCamera>();
+			if (ccs == null) { throw new System.Exception("Expectiong CharacterCamera in the scene"); }
+			if (ccs.Length > 1) { throw new System.Exception("Expectiong ONE CharacterCamera in the scene"); }
+			return ccs[0];
+		}
+		public static FpsCharacterController GetCurrentController() {
+			CharacterCamera cam = GetCharacterCamera();
+			return GetCharacterControllerOf(cam.target);
+		}
+	}
 }
