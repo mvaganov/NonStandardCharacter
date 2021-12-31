@@ -4,7 +4,7 @@ using UnityEngine.Events;
 using UnityEngine.InputSystem;
 
 namespace NonStandard.Character {
-	public class FpsCharacterController : MonoBehaviour {
+	public class UserController : MonoBehaviour {
 		[Tooltip("What character is being controlled (right-click to add default controls)")]
 		[ContextMenuItem("Add default user controls", "CreateDefaultUserControls")]
 		[SerializeField] protected CharacterRoot target;
@@ -22,11 +22,12 @@ namespace NonStandard.Character {
 				Target = value.GetComponent<CharacterRoot>();
 			}
 		}
+		public CharacterCamera CharacterCamera { get => _camera; set => _camera = value; }
 		public CharacterRoot Target {
 			get { return target; }
 			set {
 				target = value;
-				transform.parent = MoveTransform;
+				transform.SetParent(MoveTransform);
 				transform.localPosition = Vector3.zero;
 				transform.localRotation = Quaternion.identity;
 			}
@@ -88,6 +89,12 @@ namespace NonStandard.Character {
 			if (context.control.path.StartsWith("/Mouse/") && UserInput.IsMouseOverUIObject()) { return; }
 			_camera?.ProcessZoom(context);
 		}
+		public Transform GetCameraTarget() {
+			if (target.move != null && target.move.head != null) {
+				return target.move.head;
+			}
+			return target.transform;
+		}
 		const string n_Player = "Player", n_MouseLook = "MouseLook", n_Move = "Move", n_Jump = "Jump", n_Look = "Look", n_Zoom = "Zoom", n_Fire = "Fire", n_ToggleML = "Toggle MouseLook";
 		const string n_InputActionAsset = "FpsCharacterController", n_InputActionPath = "Assets/Resources";
 #if UNITY_EDITOR
@@ -104,18 +111,18 @@ namespace NonStandard.Character {
 				pleaseCreateInputActionAsset = true;
 				userInput.inputActionAsset = ScriptableObject.CreateInstance<InputActionAsset>();
 			}
-			Binding[] bindings = new Binding[] {
-				new Binding("move with player", n_Player+"/"+n_Move,    ControlType.Vector2, new EventBind(this, nameof(this.SetMove)), new string[] {"<Gamepad>/leftStick", "<XRController>/{Primary2DAxis}", "<Joystick>/stick",
-					Binding.CompositePrefix+"WASD:"+"Up:<Keyboard>/w,<Keyboard>/upArrow;Down:<Keyboard>/s,<Keyboard>/downArrow;Left:<Keyboard>/a,<Keyboard>/leftArrow;Right:<Keyboard>/d,<Keyboard>/rightArrow"}),
-				new Binding("jump with player", n_Player+"/"+n_Jump,    ControlType.Button,  new EventBind(this, nameof(this.SetJump)), new string[] {"<Keyboard>/space","<Gamepad>/buttonSouth"}),
-				new Binding("shoot with player", n_Player + "/" + n_Fire,ControlType.Button,  new EventBind(this, nameof(this.SetFire)), new string[] {
+			InputControlBinding[] bindings = new InputControlBinding[] {
+				new InputControlBinding("move with player", n_Player+"/"+n_Move,    ControlType.Vector2, new EventBind(this, nameof(this.SetMove)), new string[] {"<Gamepad>/leftStick", "<XRController>/{Primary2DAxis}", "<Joystick>/stick",
+					InputControlBinding.CompositePrefix+"WASD:"+"Up:<Keyboard>/w,<Keyboard>/upArrow;Down:<Keyboard>/s,<Keyboard>/downArrow;Left:<Keyboard>/a,<Keyboard>/leftArrow;Right:<Keyboard>/d,<Keyboard>/rightArrow"}),
+				new InputControlBinding("jump with player", n_Player+"/"+n_Jump,    ControlType.Button,  new EventBind(this, nameof(this.SetJump)), new string[] {"<Keyboard>/space","<Gamepad>/buttonSouth"}),
+				new InputControlBinding("shoot with player", n_Player + "/" + n_Fire,ControlType.Button,  new EventBind(this, nameof(this.SetFire)), new string[] {
 				"<Gamepad>/rightTrigger","<Mouse>/leftButton","<Touchscreen>/primaryTouch/tap","<Joystick>/trigger","<XRController>/{PrimaryAction}","<Gamepad>/buttonWest"}),
-				new Binding("toggle mouse look", n_Player+"/"+n_ToggleML,ControlType.Button,  new EventBind(this, nameof(BindMouselookInputMapToButton)), new string[] { "<Mouse>/rightButton" }),
-				new Binding("rotate camera", n_Player+"/"+n_Look,    ControlType.Vector2, new EventBind(this, nameof(NotifyCameraRotation)), new string[] { "<Gamepad>/rightStick", "<Joystick>/{Hatswitch}" }),
-				new Binding("\"mouse look\" rotate camera with mouse", n_MouseLook+"/"+n_Look, ControlType.Vector2, new EventBind(this, nameof(NotifyCameraRotation)), new string[] { "<VirtualMouse>/delta", "<Pointer>/delta", "<Mouse>/delta" }),
-				new Binding("zoom camera", n_Player+"/"+n_Zoom,    ControlType.Vector2, new EventBind(this, nameof(NotifyCameraZoom)), new string[] { "<Mouse>/scroll" }),
+				new InputControlBinding("toggle mouse look", n_Player+"/"+n_ToggleML,ControlType.Button,  new EventBind(this, nameof(BindMouselookInputMapToButton)), new string[] { "<Mouse>/rightButton" }),
+				new InputControlBinding("rotate camera", n_Player+"/"+n_Look,    ControlType.Vector2, new EventBind(this, nameof(NotifyCameraRotation)), new string[] { "<Gamepad>/rightStick", "<Joystick>/{Hatswitch}" }),
+				new InputControlBinding("\"mouse look\" rotate camera with mouse", n_MouseLook+"/"+n_Look, ControlType.Vector2, new EventBind(this, nameof(NotifyCameraRotation)), new string[] { "<VirtualMouse>/delta", "<Pointer>/delta", "<Mouse>/delta" }),
+				new InputControlBinding("zoom camera", n_Player+"/"+n_Zoom,    ControlType.Vector2, new EventBind(this, nameof(NotifyCameraZoom)), new string[] { "<Mouse>/scroll" }),
 			};
-			foreach(Binding b in bindings) {
+			foreach(InputControlBinding b in bindings) {
 				userInput.AddBinding(b);
 			}
 			userInput.actionMapToBindOnStart = new string[] { n_Player };
@@ -167,20 +174,22 @@ namespace NonStandard.Character {
 			}
 		}
 #endif
-		public static FpsCharacterController GetCharacterControllerOf(Transform t) {
-			FpsCharacterController fps = t.GetComponentInChildren<FpsCharacterController>();
+		public static UserController GetCharacterControllerOf(Transform t) {
+			UserController fps = t.GetComponentInChildren<UserController>();
 			if (fps == null) { t = t.parent; }
 			return t != null ? GetCharacterControllerOf(t) : null;
 		}
-		public static CharacterCamera GetCharacterCamera() {
-			CharacterCamera[] ccs = FindObjectsOfType<CharacterCamera>();
-			if (ccs == null) { throw new System.Exception("Expectiong CharacterCamera in the scene"); }
-			if (ccs.Length > 1) { throw new System.Exception("Expectiong ONE CharacterCamera in the scene"); }
-			return ccs[0];
-		}
-		public static FpsCharacterController GetCurrentController() {
-			CharacterCamera cam = GetCharacterCamera();
-			return GetCharacterControllerOf(cam.target);
+		/// <param name="whichUser">if negative, will return the only user. if there is more than one user, throws an error.</param>
+		/// <returns></returns>
+		/// <exception cref="System.Exception"></exception>
+		public static UserController GetUserCharacterController(int whichUser = -1) {
+			UserController[] ucc = FindObjectsOfType<UserController>();
+			if (ucc == null || ucc.Length == 0) { throw new System.Exception($"Expecting {nameof(UserController)} in the scene"); }
+			if (whichUser < 0 && ucc.Length > 1) { throw new System.Exception($"Expectiong ONE {nameof(UserController)} in the scene"); }
+			int i = whichUser;
+			if (i < 0) { i = 0; }
+			if (i > ucc.Length) { throw new System.Exception($"Expecting at least {i+1} {nameof(UserController)}s in the scene"); }
+			return ucc[i];
 		}
 	}
 }

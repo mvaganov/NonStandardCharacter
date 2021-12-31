@@ -42,7 +42,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1072249256}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: eb72ddd484cf47d42a0da7f83ddbbbe8, type: 3}
+  m_Script: {fileID: 11500000, guid: 121ac8e7c9bb3664190a16e1da180854, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 8380686396385984217}
@@ -90,7 +90,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   inputActionAsset: {fileID: -944628639613478452, guid: 36e2e8f9bff79394db718929b3947520, type: 3}
-  inputBindings:
+  inputControlBindings:
   - description: move with player
     actionName: Player/Move
     controlType: 1
@@ -103,7 +103,7 @@ MonoBehaviour:
       m_PersistentCalls:
         m_Calls:
         - m_Target: {fileID: 6908758505907782173}
-          m_TargetAssemblyTypeName: NonStandard.Character.FpsCharacterController,
+          m_TargetAssemblyTypeName: NonStandard.Character.UserCharacterController,
             com.codegiraffe.nonstandard.character
           m_MethodName: SetMove
           m_Mode: 0
@@ -125,7 +125,7 @@ MonoBehaviour:
       m_PersistentCalls:
         m_Calls:
         - m_Target: {fileID: 6908758505907782173}
-          m_TargetAssemblyTypeName: NonStandard.Character.FpsCharacterController,
+          m_TargetAssemblyTypeName: NonStandard.Character.UserCharacterController,
             com.codegiraffe.nonstandard.character
           m_MethodName: SetJump
           m_Mode: 0
@@ -151,7 +151,7 @@ MonoBehaviour:
       m_PersistentCalls:
         m_Calls:
         - m_Target: {fileID: 6908758505907782173}
-          m_TargetAssemblyTypeName: NonStandard.Character.FpsCharacterController,
+          m_TargetAssemblyTypeName: NonStandard.Character.UserCharacterController,
             com.codegiraffe.nonstandard.character
           m_MethodName: SetFire
           m_Mode: 0
@@ -172,7 +172,7 @@ MonoBehaviour:
       m_PersistentCalls:
         m_Calls:
         - m_Target: {fileID: 6908758505907782173}
-          m_TargetAssemblyTypeName: NonStandard.Character.FpsCharacterController,
+          m_TargetAssemblyTypeName: NonStandard.Character.UserCharacterController,
             com.codegiraffe.nonstandard.character
           m_MethodName: BindMouselookInputMapToButton
           m_Mode: 0
@@ -194,7 +194,7 @@ MonoBehaviour:
       m_PersistentCalls:
         m_Calls:
         - m_Target: {fileID: 6908758505907782173}
-          m_TargetAssemblyTypeName: NonStandard.Character.FpsCharacterController,
+          m_TargetAssemblyTypeName: NonStandard.Character.UserCharacterController,
             com.codegiraffe.nonstandard.character
           m_MethodName: NotifyCameraRotation
           m_Mode: 0
@@ -217,7 +217,7 @@ MonoBehaviour:
       m_PersistentCalls:
         m_Calls:
         - m_Target: {fileID: 6908758505907782173}
-          m_TargetAssemblyTypeName: NonStandard.Character.FpsCharacterController,
+          m_TargetAssemblyTypeName: NonStandard.Character.UserCharacterController,
             com.codegiraffe.nonstandard.character
           m_MethodName: NotifyCameraRotation
           m_Mode: 0
@@ -238,7 +238,7 @@ MonoBehaviour:
       m_PersistentCalls:
         m_Calls:
         - m_Target: {fileID: 6908758505907782173}
-          m_TargetAssemblyTypeName: NonStandard.Character.FpsCharacterController,
+          m_TargetAssemblyTypeName: NonStandard.Character.UserCharacterController,
             com.codegiraffe.nonstandard.character
           m_MethodName: NotifyCameraZoom
           m_Mode: 0
@@ -431,7 +431,7 @@ GameObject:
   - component: {fileID: 304139427967564896}
   - component: {fileID: 6764750261306972400}
   m_Layer: 0
-  m_Name: jump press duration
+  m_Name: Press Duration
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -585,7 +585,7 @@ GameObject:
   - component: {fileID: 3672167014141943555}
   - component: {fileID: 3672167014141943554}
   m_Layer: 0
-  m_Name: Move Stick
+  m_Name: Move
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1003,7 +1003,7 @@ GameObject:
   - component: {fileID: 9208114548589858728}
   - component: {fileID: 1058484913980057399}
   m_Layer: 0
-  m_Name: Image
+  m_Name: Move Stick
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
