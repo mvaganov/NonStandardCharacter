@@ -31,6 +31,8 @@ namespace NonStandard.Character {
 		[System.Serializable] public class UnityEvent_Vector2 : UnityEvent<Vector2> { }
 		[Tooltip("notified if the look rotation is changed, like from a mouse or joystick adjustment")]
 		public UnityEvent_Vector2 OnLookInputChange;
+		[Tooltip("notified if zoom is changed, like from a mouse or joystick adjustment")]
+		public UnityEvent_Vector2 OnZoomInputChange;
 		private Transform userTarget;
 		/// <summary>for fast access to transform</summary>
 		private Transform t;
@@ -61,7 +63,12 @@ namespace NonStandard.Character {
 		}
 		/// publicly accessible variables that can be modified by external scripts or UI
 		[HideInInspector] public float horizontalRotateInput, verticalRotateInput, zoomInput;
-		public float ZoomInput { get { return zoomInput; } set { zoomInput = value; } }
+		public float ZoomInput { get { return zoomInput; }
+			set {
+				zoomInput = value;
+				OnZoomInputChange?.Invoke(new Vector2(0,value));
+			}
+		}
 		public void AddToTargetDistance(float value) {
 			targetDistance += value;
 			if(targetDistance < 0) { targetDistance = 0; }
