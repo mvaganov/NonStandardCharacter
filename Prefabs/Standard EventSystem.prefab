@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 758919249927991947}
   - component: {fileID: 758919249927991948}
   - component: {fileID: 7193539263555439888}
+  - component: {fileID: 6060156238427139001}
   m_Layer: 0
   m_Name: Standard EventSystem
   m_TagString: Untagged
@@ -62,6 +63,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_MoveRepeatDelay: 0.5
   m_MoveRepeatRate: 0.1
+  m_XRTrackingOrigin: {fileID: 0}
   m_ActionsAsset: {fileID: -944628639613478452, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
   m_PointAction: {fileID: 1054132383583890850, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
   m_MoveAction: {fileID: 3710738434707379630, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
@@ -88,3 +90,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetKind: {fileID: 758919249927991947}
+--- !u!114 &6060156238427139001
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 758919249927991949}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a9c350b0695ca6f43933d4647f954e4e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetKind: {fileID: 758919249927991948}
