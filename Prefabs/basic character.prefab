@@ -160,8 +160,9 @@ GameObject:
   - component: {fileID: 4347781871269923451}
   - component: {fileID: 4347781871269923454}
   - component: {fileID: 4347781871269923449}
-  - component: {fileID: 4347781871269923450}
   - component: {fileID: 4347781871269923448}
+  - component: {fileID: 2129597658438661224}
+  - component: {fileID: 4347781871269923450}
   m_Layer: 0
   m_Name: basic character
   m_TagString: Untagged
@@ -215,7 +216,7 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &4347781871269923450
+--- !u!114 &4347781871269923448
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -224,82 +225,20 @@ MonoBehaviour:
   m_GameObject: {fileID: 4347781871269923455}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9946da85399cde7459691bf4813d6c1a, type: 3}
+  m_Script: {fileID: 11500000, guid: c71d3c6b514a50047aa18a2c7339550d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rb: {fileID: 0}
+  data: {fileID: 0}
+  rootTransform: {fileID: 4347781871269923451}
+  rb: {fileID: 4347781871269923449}
   head: {fileID: 4179199806875309160}
-  move:
-    speed: 5
-    maxStableAngle: 60
-    automaticMovement:
-      targetPosition: {x: 0, y: 0, z: 0}
-      closeEnough: 0
-      enabled: 0
-      jumpAtObstacle: 0
-      arrived: 0
-    disabled: 0
-    canMoveInAir: 1
-    lookForwardMoving: 1
-    maintainSpeedAgainstWall: 0
-    systemMovement: 0
-    IsStableOnGround: 0
-    StrafeRightMovement: 0
-    MoveForwardMovement: 0
-    MoveDirection: {x: 0, y: 0, z: 0}
-    groundNormal: {x: 0, y: 0, z: 0}
-    OppositionDirection: {x: 0, y: 0, z: 0}
-    LastVelocity: {x: 0, y: 0, z: 0}
-    LastOppositionDirection: {x: 0, y: 0, z: 0}
-    orientationTransform: {fileID: 0}
-  jump:
-    isJumping: 0
-    peaked: 0
-    heightSet: 0
-    pressed: 0
-    showJumpArc: 0
-    forgiveLateJumps: 1
-    enabled: 1
-    min: 0.125
-    max: 1.5
-    fullPressDuration: 0.25
-    doubleJumps: 0
-    TimedJumpPress: 0
-    targetJumpHeight: 0
-    position: {x: 0, y: 0, z: 0}
-    usedDoubleJumps: 0
-    OnJumpPowerProgress:
-      m_PersistentCalls:
-        m_Calls: []
-  callbacks:
-    moveDirectionChanged:
-      m_PersistentCalls:
-        m_Calls: []
-    stand:
-      m_PersistentCalls:
-        m_Calls: []
-    jumped:
-      m_PersistentCalls:
-        m_Calls: []
-    fall:
-      m_PersistentCalls:
-        m_Calls: []
-    wallCollisionStart:
-      m_PersistentCalls:
-        m_Calls: []
-    wallCollisionStopped:
-      m_PersistentCalls:
-        m_Calls: []
-    firePressed:
-      m_PersistentCalls:
-        m_Calls: []
-    fireReleased:
-      m_PersistentCalls:
-        m_Calls: []
-    arrived:
-      m_PersistentCalls:
-        m_Calls: []
---- !u!114 &4347781871269923448
+  body: {fileID: 2129597658438661224}
+  abilities: {fileID: 0}
+  jump: {fileID: 0}
+  move: {fileID: 4347781871269923450}
+  automove: {fileID: 0}
+  callbacks: {fileID: 0}
+--- !u!114 &2129597658438661224
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -311,11 +250,36 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 39cd39337c9e20a4aa7bde5085c5f831, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  move: {fileID: 4347781871269923450}
-  data: {fileID: 0}
-  activateFunction:
-    m_PersistentCalls:
-      m_Calls: []
+  head: {fileID: 4179199806875309160}
+  hands: []
+--- !u!114 &4347781871269923450
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4347781871269923455}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 30376fee39c1c754cb416c44f8f20bf0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  root: {fileID: 0}
+  speed: 5
+  maxStableAngle: 60
+  cameraTransform: {fileID: 0}
+  disabled: 0
+  canMoveInAir: 1
+  lookForwardMoving: 1
+  maintainSpeedAgainstWall: 0
+  systemMovement: 0
+  strafeRightMovement: 0
+  moveForwardMovement: 0
+  MoveDirection: {x: 0, y: 0, z: 0}
+  groundNormal: {x: 0, y: 0, z: 0}
+  OppositionDirection: {x: 0, y: 0, z: 0}
+  LastVelocity: {x: 0, y: 0, z: 0}
+  LastOppositionDirection: {x: 0, y: 0, z: 0}
 --- !u!1 &5148089837250032269
 GameObject:
   m_ObjectHideFlags: 0

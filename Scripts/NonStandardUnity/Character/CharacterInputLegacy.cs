@@ -2,24 +2,24 @@ using UnityEngine;
 
 namespace NonStandard.Character {
 	public class CharacterInputLegacy : MonoBehaviour {
-		CharacterMove cm;
+		Root r;
 		CharacterCamera cc;
 		void Start() {
-			cm = GetComponent<CharacterMove>();
-			cc = CharacterCamera.FindCameraTargettingChildOf(cm.transform);
-			if (cm == null) { enabled = false; Debug.LogWarning("Missing " + nameof(CharacterMove) + " on " + name); }
+			r = GetComponent<Root>();
+			cc = CharacterCamera.FindCameraTargettingChildOf(r.transform);
+			if (r == null) { enabled = false; Debug.LogWarning("Missing " + nameof(Mover) + " on " + name); }
 		}
 		void Update() {
-			UpdateCharacterMove(cm);
+			UpdateCharacterMove(r);
 			if (cc != null && Input.GetMouseButton(1)) {
 				cc.ProcessLookRotation(new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y")));
 			}
 		}
-		public static void UpdateCharacterMove(CharacterMove cm) {
+		public static void UpdateCharacterMove(Root r) {
 			Vector2 input = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
 			bool jump = Input.GetButton("Jump");
-			cm.MoveInput = input;
-			cm.JumpInput = jump ? 1 : 0;
+			r.MoveInput = input;
+			r.JumpInput = jump ? 1 : 0;
 		}
 	}
 }

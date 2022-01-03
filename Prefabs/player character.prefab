@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 1072249257}
   - component: {fileID: 6908758505907782173}
   - component: {fileID: 225028634715740455}
-  - component: {fileID: 6323155568760479292}
   m_Layer: 0
   m_Name: Controller
   m_TagString: Untagged
@@ -77,6 +76,21 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  onJumpCountProgress:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 3672167015285547261}
+        m_TargetAssemblyTypeName: UnityEngine.UI.Image, UnityEngine.UI
+        m_MethodName: set_fillAmount
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &225028634715740455
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -103,8 +117,7 @@ MonoBehaviour:
       m_PersistentCalls:
         m_Calls:
         - m_Target: {fileID: 6908758505907782173}
-          m_TargetAssemblyTypeName: NonStandard.Character.UserCharacterController,
-            com.codegiraffe.nonstandard.character
+          m_TargetAssemblyTypeName: NonStandard.Character.UserController, com.codegiraffe.nonstandard.character
           m_MethodName: SetMove
           m_Mode: 0
           m_Arguments:
@@ -125,8 +138,7 @@ MonoBehaviour:
       m_PersistentCalls:
         m_Calls:
         - m_Target: {fileID: 6908758505907782173}
-          m_TargetAssemblyTypeName: NonStandard.Character.UserCharacterController,
-            com.codegiraffe.nonstandard.character
+          m_TargetAssemblyTypeName: NonStandard.Character.UserController, com.codegiraffe.nonstandard.character
           m_MethodName: SetJump
           m_Mode: 0
           m_Arguments:
@@ -151,8 +163,7 @@ MonoBehaviour:
       m_PersistentCalls:
         m_Calls:
         - m_Target: {fileID: 6908758505907782173}
-          m_TargetAssemblyTypeName: NonStandard.Character.UserCharacterController,
-            com.codegiraffe.nonstandard.character
+          m_TargetAssemblyTypeName: NonStandard.Character.UserController, com.codegiraffe.nonstandard.character
           m_MethodName: SetFire
           m_Mode: 0
           m_Arguments:
@@ -172,8 +183,7 @@ MonoBehaviour:
       m_PersistentCalls:
         m_Calls:
         - m_Target: {fileID: 6908758505907782173}
-          m_TargetAssemblyTypeName: NonStandard.Character.UserCharacterController,
-            com.codegiraffe.nonstandard.character
+          m_TargetAssemblyTypeName: NonStandard.Character.UserController, com.codegiraffe.nonstandard.character
           m_MethodName: BindMouselookInputMapToButton
           m_Mode: 0
           m_Arguments:
@@ -194,8 +204,7 @@ MonoBehaviour:
       m_PersistentCalls:
         m_Calls:
         - m_Target: {fileID: 6908758505907782173}
-          m_TargetAssemblyTypeName: NonStandard.Character.UserCharacterController,
-            com.codegiraffe.nonstandard.character
+          m_TargetAssemblyTypeName: NonStandard.Character.UserController, com.codegiraffe.nonstandard.character
           m_MethodName: NotifyCameraRotation
           m_Mode: 0
           m_Arguments:
@@ -217,8 +226,7 @@ MonoBehaviour:
       m_PersistentCalls:
         m_Calls:
         - m_Target: {fileID: 6908758505907782173}
-          m_TargetAssemblyTypeName: NonStandard.Character.UserCharacterController,
-            com.codegiraffe.nonstandard.character
+          m_TargetAssemblyTypeName: NonStandard.Character.UserController, com.codegiraffe.nonstandard.character
           m_MethodName: NotifyCameraRotation
           m_Mode: 0
           m_Arguments:
@@ -238,8 +246,7 @@ MonoBehaviour:
       m_PersistentCalls:
         m_Calls:
         - m_Target: {fileID: 6908758505907782173}
-          m_TargetAssemblyTypeName: NonStandard.Character.UserCharacterController,
-            com.codegiraffe.nonstandard.character
+          m_TargetAssemblyTypeName: NonStandard.Character.UserController, com.codegiraffe.nonstandard.character
           m_MethodName: NotifyCameraZoom
           m_Mode: 0
           m_Arguments:
@@ -252,20 +259,6 @@ MonoBehaviour:
           m_CallState: 2
   actionMapToBindOnStart:
   - Player
---- !u!114 &6323155568760479292
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1072249256}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 874d8290f01d143498f6db8fce19d8dd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  whereToGo: {fileID: 1988414672}
-  worldPositionStays: 0
 --- !u!1 &1988414669
 GameObject:
   m_ObjectHideFlags: 0
@@ -279,7 +272,6 @@ GameObject:
   - component: {fileID: 1988414671}
   - component: {fileID: 1988414670}
   - component: {fileID: 1988414674}
-  - component: {fileID: 1988414675}
   m_Layer: 0
   m_Name: Camera
   m_TagString: Untagged
@@ -381,6 +373,7 @@ MonoBehaviour:
   _target: {fileID: 8207741432246214857}
   clipAgainstWalls: 1
   targetDistance: 10
+  maxDistance: 50
   userDistance: 0
   OnLookInputChange:
     m_PersistentCalls:
@@ -399,29 +392,25 @@ MonoBehaviour:
         m_CallState: 2
   OnZoomInputChange:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2844150189709657216}
+        m_TargetAssemblyTypeName: NonStandard.Inputs.OnScreenStickAnimated, com.codegiraffe.nonstandard.input
+        m_MethodName: SetStickPositionFrominput
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   maxVerticalAngle: 100
   minVerticalAngle: -100
   inputMultiplier: {x: 0.5, y: 0.5}
   horizontalRotateInput: 0
   verticalRotateInput: 0
   zoomInput: 0
-  knownCameraViews: []
-  lerpDurationMs: 250
---- !u!114 &1988414675
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1988414669}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 874d8290f01d143498f6db8fce19d8dd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  whereToGo: {fileID: 0}
-  worldPositionStays: 0
 --- !u!1 &319206300082718312
 GameObject:
   m_ObjectHideFlags: 0
@@ -824,9 +813,10 @@ MonoBehaviour:
   m_MovementRange: 50
   m_ControlPath: <Mouse>/scroll
   stickAnimationSpeed: 128
-  axisLock: 0
+  axisLock: 1
   executeOnHeld: 1
   holdMultiplier: 50
+  msToWaitBeforeZeroing: 100
 --- !u!114 &3522267557322078566
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1381,6 +1371,7 @@ MonoBehaviour:
   axisLock: 0
   executeOnHeld: 0
   holdMultiplier: 1
+  msToWaitBeforeZeroing: 100
 --- !u!114 &1058484913980057399
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1594,6 +1585,7 @@ MonoBehaviour:
   axisLock: 0
   executeOnHeld: 0
   holdMultiplier: 1
+  msToWaitBeforeZeroing: 100
 --- !u!114 &8276746663039045428
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1705,10 +1697,10 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_Sprite: {fileID: 21300000, guid: 2238d969159fc6a4497bb91e40e731ce, type: 3}
-  m_Type: 0
+  m_Type: 3
   m_PreserveAspect: 0
   m_FillCenter: 1
-  m_FillMethod: 4
+  m_FillMethod: 1
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
@@ -2059,6 +2051,81 @@ MonoBehaviour:
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: jump
+--- !u!114 &3967614873642175991
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8380686396385984222}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f8b31a6d5ec64547ab0f6d8791c838a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  root: {fileID: 0}
+  isJumping: 0
+  peaked: 0
+  heightSet: 0
+  pressed: 0
+  forgiveLateJumps: 1
+  min: 0.125
+  max: 1.5
+  fullPressDuration: 0.25
+  doubleJumps: 0
+  timedJumpPress: 0
+  targetJumpHeight: 0
+  position: {x: 0, y: 0, z: 0}
+  usedDoubleJumps: 0
+  OnJumpPowerProgress:
+    m_PersistentCalls:
+      m_Calls: []
+  OnJumpCountChanged:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &4158311897631825625
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8380686396385984222}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 629976ceb713d5344b3a986f9d43d578, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  input: 0
+  firePressed:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1882307238693252525}
+        m_TargetAssemblyTypeName: NonStandard.Ui.PressEvents, com.codegiraffe.nonstandard.input
+        m_MethodName: Press
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  fireReleased:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1882307238693252525}
+        m_TargetAssemblyTypeName: NonStandard.Ui.PressEvents, com.codegiraffe.nonstandard.input
+        m_MethodName: Release
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &8380686395080478234
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2361,6 +2428,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 4347781871269923448, guid: 7508e324b3af6ed4f9372025d577b112, type: 3}
+      propertyPath: jump
+      value: 
+      objectReference: {fileID: 3967614873642175991}
+    - target: {fileID: 4347781871269923448, guid: 7508e324b3af6ed4f9372025d577b112, type: 3}
+      propertyPath: abilities
+      value: 
+      objectReference: {fileID: 4158311897631825625}
     - target: {fileID: 4347781871269923450, guid: 7508e324b3af6ed4f9372025d577b112, type: 3}
       propertyPath: move.orientationTransform
       value: 
@@ -2475,11 +2550,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7508e324b3af6ed4f9372025d577b112, type: 3}
---- !u!4 &8380686396385984218 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 4347781871269923451, guid: 7508e324b3af6ed4f9372025d577b112, type: 3}
-  m_PrefabInstance: {fileID: 5194973966512796833}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &8207741432246214857 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4179199806875309160, guid: 7508e324b3af6ed4f9372025d577b112, type: 3}
@@ -2493,9 +2563,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 8380686396385984222}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 39cd39337c9e20a4aa7bde5085c5f831, type: 3}
+  m_Script: {fileID: 11500000, guid: c71d3c6b514a50047aa18a2c7339550d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!4 &8380686396385984218 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4347781871269923451, guid: 7508e324b3af6ed4f9372025d577b112, type: 3}
+  m_PrefabInstance: {fileID: 5194973966512796833}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &8380686396385984222 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4347781871269923455, guid: 7508e324b3af6ed4f9372025d577b112, type: 3}

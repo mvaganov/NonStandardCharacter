@@ -7,23 +7,24 @@ namespace NonStandard.Character {
 	public class UserController : MonoBehaviour {
 		[Tooltip("What character is being controlled (right-click to add default controls)")]
 		[ContextMenuItem("Add default user controls", "CreateDefaultUserControls")]
-		[SerializeField] protected CharacterRoot target;
-		protected CharacterRoot lastTarget;
+		[SerializeField] protected Root target;
+		protected Root lastTarget;
 		[Tooltip("What camera is being controlled")]
 		[SerializeField] protected CharacterCamera _camera;
 		InputActionMap mouselookActionMap;
 		public UnityEvent_Vector2 onMoveInput;
 		public UnityEvent_float onJumpPowerProgress;
+		public UnityEvent_float onJumpCountProgress;
 		[System.Serializable] public class UnityEvent_Vector2 : UnityEvent<Vector2> { }
 		[System.Serializable] public class UnityEvent_float : UnityEvent<float> { }
 		public Transform MoveTransform {
 			get { return target != null ? target.transform : null; }
 			set {
-				Target = value.GetComponent<CharacterRoot>();
+				Target = value.GetComponent<Root>();
 			}
 		}
 		public CharacterCamera CharacterCamera { get => _camera; set => _camera = value; }
-		public CharacterRoot Target {
+		public Root Target {
 			get { return target; }
 			set {
 				target = value;
@@ -33,20 +34,25 @@ namespace NonStandard.Character {
 			}
 		}
 		public float JumpInput {
-			get { return target != null ? target.move.JumpInput : 0; }
-			set { if (target != null) target.move.JumpInput = value; }
+			get { return target && target.jump ? target.JumpInput : 0; }
+			set { if (target && target.jump) target.JumpInput = value; }
 		}
 		public float FireInput {
-			get { return target != null ? target.move.FireInput : 0; }
-			set { if (target != null) target.move.FireInput = value; }
+			get { return target && target.abilities ? target.abilities.FireInput : 0; }
+			set {
+				if (target && target.abilities) {
+					target.abilities.FireInput = value;
+				}
+				else { Debug.LogWarning("missing "+nameof(Abilities)); }
+			}
 		}
 		public float MoveSpeed {
 			get { return target != null ? target.move.MoveSpeed : 0; }
 			set { if (target != null) target.move.MoveSpeed = value; }
 		}
 		public float JumpHeight {
-			get { return target != null ? target.move.JumpHeight : 0; }
-			set { if (target != null) target.move.JumpHeight = value; }
+			get { return target != null ? target.jump.JumpHeight : 0; }
+			set { if (target != null) target.jump.JumpHeight = value; }
 		}
 		public Vector2 MoveInput {
 			get => new Vector2(target.move.StrafeRightMovement, target.move.MoveForwardMovement);
@@ -56,14 +62,19 @@ namespace NonStandard.Character {
 				onMoveInput?.Invoke(value);
 			}
 		}
-		public void NotifyJumpPowerProgress(float power) { onJumpPowerProgress?.Invoke(power); }
-		public bool IsAutoMoving() { return target.move.IsAutoMoving(); }
-		public void SetAutoMovePosition(Vector3 position, System.Action whatToDoWhenTargetIsReached = null, float closeEnough = 0) {
-			if (target != null) { target.move.SetAutoMovePosition(position, whatToDoWhenTargetIsReached, closeEnough); }
+		public void NotifyJumpPowerProgress(float power) {
+			onJumpPowerProgress?.Invoke(power);
+		}
+		public void NotifyJumpCountProgress(float progress) {
+			onJumpCountProgress?.Invoke(progress);
+		}
+		public bool IsAutoMoving => target != null && target.move != null && target.move.IsAutoMoving;
+		public void SetAutoMovePosition(Vector3 position, float closeEnough = 0, System.Action whatToDoWhenTargetIsReached = null) {
+			if (target != null) { target.move.SetAutoMovePosition(position, closeEnough, whatToDoWhenTargetIsReached); }
 		}
 		public void DisableAutoMove() { if (target != null) target.move.DisableAutoMove(); }
-		public float GetJumpProgress() { return target != null ? target.move.GetJumpProgress() : 0; }
-		public bool IsStableOnGround() { return target != null ? target.move.IsStableOnGround() : false; }
+		public float GetJumpProgress() { return target != null ? target.jump.GetJumpProgress() : 0; }
+		public bool IsStableOnGround() { return target != null ? target.move.IsStableOnGround : false; }
 #if ENABLE_INPUT_SYSTEM
 		public void SetMove(InputAction.CallbackContext context) {
 			MoveInput = context.ReadValue<Vector2>();
@@ -90,8 +101,8 @@ namespace NonStandard.Character {
 			_camera?.ProcessZoom(context);
 		}
 		public Transform GetCameraTarget() {
-			if (target.move != null && target.move.head != null) {
-				return target.move.head;
+			if (target.move != null && target.head != null) {
+				return target.head;
 			}
 			return target.transform;
 		}
@@ -101,6 +112,7 @@ namespace NonStandard.Character {
 		public void CreateDefaultUserControls() {
 			_camera = GetComponentInChildren<CharacterCamera>();
 			if (_camera == null) { _camera = GetComponentInParent<CharacterCamera>(); }
+			if (_camera == null && transform.parent) { _camera = transform.parent.GetComponentInChildren<CharacterCamera>(); }
 			UserInput userInput = GetComponent<UserInput>();
 			bool pleaseCreateInputActionAsset = false;
 			if (userInput == null) {
@@ -128,10 +140,8 @@ namespace NonStandard.Character {
 			userInput.actionMapToBindOnStart = new string[] { n_Player };
 			if (pleaseCreateInputActionAsset) {
 				userInput.inputActionAsset.name = n_InputActionPath;
-#if UNITY_EDITOR
 				userInput.inputActionAsset = ScriptableObjectUtility.SaveScriptableObjectAsAsset(userInput.inputActionAsset,
 					n_InputActionAsset + "." + InputActionAsset.Extension, n_InputActionPath, userInput.inputActionAsset.ToJson()) as InputActionAsset;
-#endif
 			}
 		}
 #endif
@@ -148,17 +158,35 @@ namespace NonStandard.Character {
 				case InputActionPhase.Canceled: mouselookActionMap.Disable(); break;
 			}
 		}
-        private void Update() {
+		public void RelinquishCharacter(Root target = null) {
+			if (target == null) { target = this.target; }
+			if (target.jump) {
+				EventBind.Remove(target.jump.OnJumpPowerProgress, this, nameof(NotifyJumpPowerProgress));
+				EventBind.Remove(target.jump.OnJumpCountChanged, this, nameof(NotifyJumpCountProgress));
+			}
+			if (target.move) {
+				target.move.cameraTransform = null;
+			}
+			CharacterCamera.target = null;
+		}
+		public void AbsorbCharacter(Root target) {
+			this.target = target;
+			if (target.jump) {
+				EventBind.On(target.jump.OnJumpPowerProgress, this, nameof(NotifyJumpPowerProgress));
+				EventBind.On(target.jump.OnJumpCountChanged, this, nameof(NotifyJumpCountProgress));
+			}
+			if (target.move) {
+				target.move.cameraTransform = CharacterCamera.transform;
+			}
+			CharacterCamera.target = GetCameraTarget();
+		}
+		private void Update() {
 			if (lastTarget != target) {
-				if (lastTarget != null) {
-					EventBind.Remove(lastTarget.move.jump.OnJumpPowerProgress, this, nameof(NotifyJumpPowerProgress));
-				}
-				if (target != null && target.move != null && target.move.jump != null) {
-					EventBind.On(target.move.jump.OnJumpPowerProgress, this, nameof(NotifyJumpPowerProgress));
-				}
+				if (lastTarget) { RelinquishCharacter(lastTarget); }
+				if (target) { AbsorbCharacter(target); }
 				lastTarget = target;
 			}
-        }
+		}
 #else
 		CharacterCamera _camera;
 		void Start() {
