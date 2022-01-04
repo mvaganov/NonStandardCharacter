@@ -7,7 +7,7 @@ namespace NonStandard.Character {
 		void Start() {
 			r = GetComponent<Root>();
 			cc = CharacterCamera.FindCameraTargettingChildOf(r.transform);
-			if (r == null) { enabled = false; Debug.LogWarning("Missing " + nameof(Mover) + " on " + name); }
+			if (r == null) { enabled = false; Debug.LogWarning("Missing " + nameof(Move) + " on " + name); }
 		}
 		void Update() {
 			UpdateCharacterMove(r);

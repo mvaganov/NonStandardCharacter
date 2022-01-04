@@ -2,7 +2,7 @@
 
 namespace NonStandard.Character {
 	[RequireComponent(typeof(Rigidbody))]
-	public class Mover : MonoBehaviour {
+	public class Move : MonoBehaviour {
 		private CapsuleCollider capsule;
 		[HideInInspector] public Root root;
 
@@ -18,12 +18,12 @@ namespace NonStandard.Character {
 		public bool maintainSpeedAgainstWall;
 		[Tooltip("Force movement, ignoring physics system. Allows movement during paused game.")]
 		public bool systemMovement;
-		[HideInInspector] private bool isStableOnGround;
-		[HideInInspector] public float strafeRightMovement;
-		[HideInInspector] public float moveForwardMovement;
+		protected bool isStableOnGround;
+		protected float strafeRightMovement;
+		protected float moveForwardMovement;
 
 		[HideInInspector] public Vector3 MoveDirection;
-		[HideInInspector] public Vector3 groundNormal; // TODO refactor in CharacterMove
+		[HideInInspector] public Vector3 GroundNormal;
 		[HideInInspector] public Vector3 OppositionDirection;
 		[HideInInspector] public Vector3 LastVelocity;
 		[HideInInspector] public Vector3 LastOppositionDirection;
@@ -131,8 +131,8 @@ namespace NonStandard.Character {
 			}
 		}
 		public void InternalLateUpdate(Root r) {
-			if (!IsStableOnGround && (r.jump == null || !r.jump.isJumping) && groundNormal != Vector3.zero) {
-				groundNormal = Vector3.zero;
+			if (!IsStableOnGround && (r.jump == null || !r.jump.isJumping) && GroundNormal != Vector3.zero) {
+				GroundNormal = Vector3.zero;
 				r.callbacks?.fall?.Invoke();
 			}
 			IsStableOnGround = false; // invalidate stability *after* jump state is calculated

@@ -14,7 +14,7 @@ namespace NonStandard.Character {
 		public Body body;
 		public Abilities abilities;
 		public Jump jump;
-		public Mover move;
+		public Move move;
 		public AutoMove automove;
 		public Callbacks callbacks;
 #if UNITY_EDITOR
@@ -28,7 +28,7 @@ namespace NonStandard.Character {
 			if (rb == null) { rb = rootTransform.GetComponent<Rigidbody>(); }
 			if (abilities == null) { abilities = GetComponent<Abilities>(); }
 			if (jump == null) { jump = GetComponent<Jump>(); }
-			if (move == null) { move = GetComponent<Mover>(); }
+			if (move == null) { move = GetComponent<Move>(); }
 			if (automove == null) { automove = GetComponent<AutoMove>(); }
 			if (callbacks == null) { callbacks = GetComponent<Callbacks>(); }
 		}
@@ -36,7 +36,7 @@ namespace NonStandard.Character {
 		public void Init() {
 			rootTransform = transform;
 			rb = GetComponent<Rigidbody>();
-			if (move == null) { move = GetComponentInChildren<Mover>(); }
+			if (move == null) { move = GetComponentInChildren<Move>(); }
 		}
 		public void Awake() { Init(); }
 		public void Start() { Init(); }
@@ -107,10 +107,10 @@ namespace NonStandard.Character {
 			int contactThatMakesStability = move.CollisionStabilityCheck(this, collision);
 			if (contactThatMakesStability >= 0) {
 				Vector3 standingNormal = collision.contacts[contactThatMakesStability].normal;
-				if (standingNormal != move.groundNormal) {
+				if (standingNormal != move.GroundNormal) {
 					callbacks?.stand?.Invoke(standingNormal);
 				}
-				move.groundNormal = standingNormal;
+				move.GroundNormal = standingNormal;
 			}
 		}
 		private void OnCollisionEnter(Collision collision) {

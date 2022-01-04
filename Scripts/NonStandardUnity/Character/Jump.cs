@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Events;
 
 namespace NonStandard.Character {
-	[RequireComponent(typeof(Mover))]
+	[RequireComponent(typeof(Move))]
 	public class Jump : MonoBehaviour {
 		[HideInInspector] public Root root;
 		internal float lastJump = -1;
