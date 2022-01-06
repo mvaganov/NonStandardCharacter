@@ -5,8 +5,7 @@ using UnityEngine.InputSystem;
 #endif
 
 namespace NonStandard.Character {
-	public class CharacterCamera : MonoBehaviour
-	{
+	public class CharacterCamera : MonoBehaviour {
 		[Tooltip("which transform to follow with the camera")]
 		public Transform _target;
 		[Tooltip("if false, camera can pass through walls")]
@@ -19,14 +18,7 @@ namespace NonStandard.Character {
 		public float maxDistance = 50;
 		/// <summary>calculate how far to clip the camera in the Update, to keep LateUpdate as light as possible
 		protected float distanceBecauseOfObstacle;
-		/// <summary>
-		/// user-defined rotation
-		/// </summary>
-		protected Quaternion userRotation;
-		/// <summary>
-		/// user-defined zoom
-		/// </summary>
-		public float userDistance;
+
 		[System.Serializable] public class UnityEvent_Vector2 : UnityEvent<Vector2> { }
 		[Tooltip("notified if the look rotation is changed, like from a mouse or joystick adjustment")]
 		public UnityEvent_Vector2 OnLookInputChange;
@@ -71,7 +63,6 @@ namespace NonStandard.Character {
 			}
 		}
 		public float DistanceBecauseOfObstacle { get => distanceBecauseOfObstacle; set => distanceBecauseOfObstacle = value; }
-		public Quaternion UserRotation => userRotation;
 		public void AddToTargetDistance(float value) {
 			targetDistance += value;
 			if (targetDistance < 0) { targetDistance = 0; }
@@ -149,12 +140,7 @@ namespace NonStandard.Character {
 		public void Start() {
 			RecalculateDistance();
 			RecalculateRotation();
-			userRotation = t.rotation;
-			userDistance = targetDistance;
 			_camera = GetComponent<Camera>();
-			//for (int i = 0; i < knownCameraViews.Count; ++i) {
-			//	knownCameraViews[i].ResolveLookRotation();
-			//}
 		}
 
 		public bool RecalculateDistance() {
@@ -183,7 +169,6 @@ namespace NonStandard.Character {
 				zoom = zoomInput * Time.unscaledDeltaTime;
 			targetDistance -= zoom;
 			if (zoom != 0) {
-				userDistance = targetDistance;
 				if (targetDistance < 0) { targetDistance = 0; }
 				if (targetDistance > maxDistance) { targetDistance = maxDistance; }
 				if (target == null) {
@@ -201,7 +186,6 @@ namespace NonStandard.Character {
 				if (pitch >= 180) { pitch -= 360; }
 				pitch = Mathf.Clamp(pitch, minVerticalAngle, maxVerticalAngle);
 				targetRotation *= Quaternion.Euler(pitch, yaw, 0);
-				userRotation = targetRotation;
 			}
 			if (target != null) {
 				RaycastHit hitInfo;
