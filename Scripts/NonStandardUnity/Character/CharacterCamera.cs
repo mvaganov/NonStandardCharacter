@@ -47,6 +47,9 @@ namespace NonStandard.Character {
 		public Transform target { get { return _target; } 
 			set {
 				//Debug.Log("target! "+Show.GetStack(10));
+				if (_target == transform.parent) {
+					transform.SetParent(value);
+				}
 				_target = value; 
 			}
 		}
@@ -76,11 +79,10 @@ namespace NonStandard.Character {
 			OrthographicCameraDistanceChangeLogic();
 		}
 		public void OrthographicCameraDistanceChangeLogic() {
-			if (_camera != null && _camera.orthographic) {
-				if (targetDistance < 1f / 128) { targetDistance = 1f / 128; }
-				if (targetDistance > maxDistance) { targetDistance = maxDistance; }
-				_camera.orthographicSize = targetDistance / 2;
-			}
+			if (_camera == null || !_camera.orthographic) { return; }
+			if (targetDistance < 1f / 128) { targetDistance = 1f / 128; }
+			if (targetDistance > maxDistance) { targetDistance = maxDistance; }
+			_camera.orthographicSize = targetDistance / 2;
 		}
 
 		public bool IsTargettingChildOf(Transform targetRoot) {
