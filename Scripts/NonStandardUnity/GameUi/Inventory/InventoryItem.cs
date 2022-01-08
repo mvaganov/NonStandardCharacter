@@ -15,7 +15,7 @@ namespace NonStandard.GameUi.Inventory {
 		public SpecialBehavior inventoryAddBehavior;
 		[HideInInspector] public Inventory currentInventory;
 		[HideInInspector] public InventoryItemObject component;
-		public object data;
+		[HideInInspector] public object data;
 		public bool nodrop = false;
 		public string name {
 			get => _name;

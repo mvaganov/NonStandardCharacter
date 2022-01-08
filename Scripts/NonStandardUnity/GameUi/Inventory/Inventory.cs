@@ -8,7 +8,7 @@ namespace NonStandard.GameUi.Inventory {
 		public bool allowRemove = true;
 		[SerializeField] private List<InventoryItem> items;
 		public InventoryItem.SpecialBehavior itemAddBehavior;
-		
+
 		/// <summary>
 		/// intended for use by DataSheet
 		/// </summary>
@@ -19,11 +19,9 @@ namespace NonStandard.GameUi.Inventory {
 			for(int i = 0; i < items.Count; ++i) {
 				data.Add(items[i]);
 			}
-        }
-		public List<InventoryItem> GetItems() { return items; }
-		private void Awake() {
-			//Global.GetComponent<InventoryManager>().Register(this);
 		}
+		public List<InventoryItem> GetItems() { return items; }
+
 		public void ActivateGameObject(object itemObject) {
 			//Debug.Log("activate " + itemObject);
 			switch (itemObject) {
@@ -34,7 +32,7 @@ namespace NonStandard.GameUi.Inventory {
 		}
 		public void DeactivateGameObject(object itemObject) {
 			//Debug.Log("deactivate " + itemObject);
-            switch (itemObject) {
+			switch (itemObject) {
 				case InventoryItem i: DeactivateGameObject(i.component); return;
 				case GameObject go: go.SetActive(false); return;
 				case Component c: c.gameObject.SetActive(false); return;
@@ -48,7 +46,7 @@ namespace NonStandard.GameUi.Inventory {
 		}
 #endif
 		public InventoryItem FindInventoryItemToAdd(object data, bool createIfMissing) {
-            switch (data) {
+			switch (data) {
 				case InventoryItem invi: return invi;
 				case InventoryItemObject invio: return invio.item;
 				case GameObject go: {
@@ -71,45 +69,58 @@ namespace NonStandard.GameUi.Inventory {
 			return null;
 		}
 		internal InventoryItem AddItem(object itemObject) {
+			InventoryItem inv = AddItemWithoutNotify(itemObject);
+			if (inv != null && itemAddBehavior != null && itemAddBehavior.onAdd != null && itemAddBehavior.onAdd.GetPersistentEventCount() > 0) {
+				itemAddBehavior.onAdd.Invoke(itemObject);
+			}
+			return inv;
+		}
+		internal InventoryItem AddItemWithoutNotify(object itemObject) {
 			if (items == null) { items = new List<InventoryItem>(); }
 			InventoryItem inv = FindInventoryItemToAdd(itemObject, true);
 			if (items.Contains(inv)) {
 				Debug.LogWarning(this + " already has item " + inv);
 				return null;
 			}
+			return InsertItemWithoutNotify(items.Count, inv);
+		}
+		private InventoryItem InsertItemWithoutNotify(int index, InventoryItem inv) {
 			if (!allowAdd) {
 				Debug.LogWarning(this + " will not add " + inv);
 				return null;
-            }
-			items.Add(inv);
-			if (itemAddBehavior != null && itemAddBehavior.onAdd != null && itemAddBehavior.onAdd.GetPersistentEventCount() > 0) {
-				itemAddBehavior.onAdd.Invoke(itemObject);
+			}
+			items.Insert(index, inv);
+			return inv;
+		}
+		public InventoryItem RemoveItem(object itemObject) {
+			InventoryItem inv = RemoveItemWithoutNotify(itemObject);
+			if (inv != null && itemAddBehavior != null && itemAddBehavior.onRemove != null && itemAddBehavior.onRemove.GetPersistentEventCount() > 0) {
+				itemAddBehavior.onRemove.Invoke(inv);
 			}
 			return inv;
 		}
-		internal InventoryItem RemoveItem(object itemObject) {
+		internal InventoryItem RemoveItemWithoutNotify(object itemObject) {
 			InventoryItem inv = FindInventoryItemToAdd(itemObject, false);
 			int index = inv != null ? items.IndexOf(inv) : -1;
 			if (index < 0) {
 				Debug.LogWarning(this + " does not contain item " + itemObject);
 				return null;
 			}
+			return RemoveItemAtWithoutNotify(index);
+		}
+		private InventoryItem RemoveItemAtWithoutNotify(int index) {
+			InventoryItem inv = items[index];
 			if (!allowRemove) {
 				Debug.LogWarning(this + " will not remove " + inv);
 				return null;
 			}
-			return RemoveItemAt(index);
-		}
-		private InventoryItem RemoveItemAt(int index) {
-			InventoryItem inv = items[index];
 			items.RemoveAt(index);
-			itemAddBehavior?.onRemove?.Invoke(inv);
 			return inv;
 		}
 		public void DropAllItems() {
 			for(int i = items.Count-1; i >= 0; --i) {
 				items[i].Drop();
-            }
-        }
+			}
+		}
 	}
 }
