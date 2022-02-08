@@ -137,7 +137,7 @@ namespace NonStandard.Character {
 			foreach(InputControlBinding b in bindings) {
 				userInput.AddBinding(b);
 			}
-			userInput.actionMapToBindOnStart = new string[] { n_Player };
+			userInput.AddActionMapToBind(n_Player);
 			if (pleaseCreateInputActionAsset) {
 				userInput.inputActionAsset.name = n_InputActionPath;
 				userInput.inputActionAsset = ScriptableObjectUtility.SaveScriptableObjectAsAsset(userInput.inputActionAsset,
