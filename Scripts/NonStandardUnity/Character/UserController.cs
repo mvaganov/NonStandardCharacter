@@ -1,4 +1,5 @@
-﻿using NonStandard.Inputs;
+﻿// code by michael vaganov, released to the public domain via the unlicense (https://unlicense.org/)
+using NonStandard.Inputs;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
