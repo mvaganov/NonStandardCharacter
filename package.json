@@ -6,9 +6,7 @@
 	"description": "NonStandard library imported using NonStandard package management.",
 	"unity": "2019.4",
 	"dependencies": {
-		"com.unity.inputsystem": "1.2.0"",
-		"com.codegiraffe.nonstandard.input": "0.1.0"",
-		"com.codegiraffe.nonstandard.unityutility": "0.1.0""
+		"com.codegiraffe.nonstandard.input": "0.1.0""
 	},
 	"keywords": [
 		"library",
