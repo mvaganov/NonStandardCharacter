@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿// code by michael vaganov, released to the public domain via the unlicense (https://unlicense.org/)
+using UnityEngine;
 using UnityEngine.InputSystem;
 
 namespace NonStandard.Character {
@@ -17,6 +18,13 @@ namespace NonStandard.Character {
 		public Move move;
 		public AutoMove automove;
 		public Callbacks callbacks;
+		public bool IsActive {
+			get {
+				bool result = UserController.GetUserCharacterController().Target == this;
+				//Debug.Log(name+" "+result);
+				return result;
+			}
+		}
 #if UNITY_EDITOR
 		private void OnValidate() {
 			UnityEditorRefreshExpectedComponents();

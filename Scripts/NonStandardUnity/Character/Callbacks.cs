@@ -1,3 +1,4 @@
+// code by michael vaganov, released to the public domain via the unlicense (https://unlicense.org/)
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -5,19 +6,19 @@ namespace NonStandard.Character {
 	public class Callbacks : MonoBehaviour {
 		[System.Serializable] public class UnityEvent_Vector3 : UnityEvent<Vector3> { }
 		[Tooltip("when player changes direction, passes the new direction")]
-		public UnityEvent_Vector3 moveDirectionChanged;
+		public UnityEvent_Vector3 moveDirectionChanged = new UnityEvent_Vector3();
 		[Tooltip("when player changes their standing angle, passes the new ground normal")]
-		public UnityEvent_Vector3 stand;
+		public UnityEvent_Vector3 stand = new UnityEvent_Vector3();
 		[Tooltip("when player jumps, passes the direction of the jump")]
-		public UnityEvent_Vector3 jumped;
+		public UnityEvent_Vector3 jumped = new UnityEvent_Vector3();
 		[Tooltip("when player starts to fall")]
-		public UnityEvent fall;
+		public UnityEvent fall = new UnityEvent();
 		[Tooltip("when player collides with a wall, passes the wall's normal")]
-		public UnityEvent_Vector3 wallCollisionStart;
+		public UnityEvent_Vector3 wallCollisionStart = new UnityEvent_Vector3();
 		[Tooltip("when player is no longer colliding with a wall")]
-		public UnityEvent wallCollisionStopped;
+		public UnityEvent wallCollisionStopped = new UnityEvent();
 		[Tooltip("when auto-moving player reaches their goal, passes absolute location of the goal")]
-		public UnityEvent_Vector3 arrived;
+		public UnityEvent_Vector3 arrived = new UnityEvent_Vector3();
 		private void Awake() {
 			Root cm = GetComponent<Root>();
 			cm.callbacks = this;
