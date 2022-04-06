@@ -18,10 +18,10 @@ namespace NonStandard.Character {
 		public Move move;
 		public AutoMove automove;
 		public Callbacks callbacks;
-		public bool IsActive {
+		public bool IsControlled {
 			get {
 				bool result = UserController.GetUserCharacterController().Target == this;
-				//Debug.Log(name+" "+result);
+				Debug.Log(name+ " IsControlled " + result);
 				return result;
 			}
 		}
