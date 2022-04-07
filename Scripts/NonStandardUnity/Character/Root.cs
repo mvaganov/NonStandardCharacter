@@ -21,7 +21,7 @@ namespace NonStandard.Character {
 		public bool IsControlled {
 			get {
 				bool result = UserController.GetUserCharacterController().Target == this;
-				Debug.Log(name+ " IsControlled " + result);
+				//Debug.Log(name+ " IsControlled " + result);
 				return result;
 			}
 		}
