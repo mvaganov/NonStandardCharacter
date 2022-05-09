@@ -4,13 +4,13 @@ using UnityEngine.Events;
 
 namespace NonStandard.Character {
     public class GameResident : MonoBehaviour {
-        [Tooltip("if true, set bind point as soon as object Starts")]
-        public bool bindOnStart = true;
+        [Tooltip("if true, set home point to `transform.position` as soon as object Starts")]
+        public bool bindHomePointOnStart = true;
         public Vector3 homePoint;
         public List<GameArea> gameAreaInhabited = new List<GameArea>();
         public UnityEvent onLeftGameArea = new UnityEvent();
-        public void BindHomePoint(Vector3 position) { homePoint = position; bindOnStart = false; }
-        public void BindHomePointHere() { homePoint = transform.position; bindOnStart = false; }
+        public void BindHomePoint(Vector3 position) { homePoint = position; bindHomePointOnStart = false; }
+        public void BindHomePointHere() { homePoint = transform.position; bindHomePointOnStart = false; }
         public void ReturnHome() {
             transform.position = homePoint;
         }
@@ -25,7 +25,7 @@ namespace NonStandard.Character {
         }
 #endif
         void Start() {
-            if (bindOnStart) { BindHomePointHere(); }
+            if (bindHomePointOnStart) { BindHomePointHere(); }
         }
         private void OnTriggerEnter(Collider other) {
             GameArea area = other.GetComponent<GameArea>();
